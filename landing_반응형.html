@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeaD Archive - User Portal v60.6</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --main-orange: #FFA364;
+            --text-black: #111;
+            --text-grey: #666;
+            --border-light: #eee;
+            --bg-light: #f8f8f8;
+            --max-width: 100%;
+        }
+
+        /* Base Setup */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+        
+        body { 
+            background-color: #ffffff; 
+            color: var(--text-black); 
+            overflow-x: hidden;
+        }
+
+        /* 1920px Wrapper */
+        .site-wrapper {
+            max-width: 100%; 
+            margin: 0 auto;
+            background-color: #fff;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .inner-container { max-width: 100%; margin: 0 auto; padding: 0 20px; }
+        @media (min-width: 768px) { .inner-container { padding: 0 50px; } }
+
+        /* Header */
+        header { 
+            height: 70px; 
+            border-bottom: 1px solid var(--border-light); 
+            background: #fff; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        header .inner-container { display: flex; align-items: center; justify-content: space-between; height: 100%; padding-top: 0; padding-bottom: 0; }
+        
+        .logo { display: flex; align-items: center; font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+        .logo-icon { width: 22px; height: 22px; background: linear-gradient(135deg, #f3946a, #8e44ad); margin-right: 8px; border-radius: 4px; }
+        .logo span { color: var(--main-orange); }
+
+        .gnb-menu { display: flex; gap: 30px; }
+        .gnb-menu a { text-decoration: none; color: var(--text-grey); font-size: 16px; font-weight: 700; height: 70px; display: flex; align-items: center; position: relative; }
+        .gnb-menu a.active { color: var(--text-black); }
+        .gnb-menu a.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background-color: var(--text-black); }
+
+        /* Featured Section */
+        .featured-section { padding: 40px 0; border-bottom: 1px solid var(--border-light); }
+        .featured-header h2 { font-size: 14px; font-weight: 900; color: var(--main-orange); text-transform: uppercase; margin-bottom: 25px; }
+        .featured-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        .featured-grid::-webkit-scrollbar { height: 4px; }
+        .featured-grid::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+        
+        .featured-card { 
+            width: 430px; height: 242px; flex-shrink: 0; background-color: #eee; border-radius: 25px; 
+            display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; position: relative;
+            overflow: hidden;
+        }
+        .featured-card:hover { transform: translateY(-10px); }
+        .featured-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 25px; }
+        .featured-badge { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; z-index: 2; }
+
+        /* Main Content Header */
+        .header-main { padding: 50px 0 20px; display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 768px) { .header-main { flex-direction: row; justify-content: space-between; align-items: center; } }
+        
+        .header-main h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+        .search-container { position: relative; width: 100%; max-width: 350px; }
+        .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; font-size: 14px; }
+        .search-container i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; }
+
+        /* Tabs & Info */
+        .tab-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
+        .count-info { font-size: 14px; color: #333; margin-bottom: 30px; }
+        .count-info b { color: var(--main-orange); }
+
+        /* Grid System - 비율(1fr)이 아닌 고정수치(430px)로 설정 */
+        .landing-grid { 
+            display: grid; 
+            grid-template-columns: repeat(1, 430px); 
+            gap: 24px; 
+            padding-bottom: 60px;
+            justify-content: center; /* 그리드 전체 중앙 정렬 */
+        }
+        /* 화면 너비에 따라 컬럼 수만 변경, 너비는 430px로 엄격히 고정 */
+        @media (min-width: 950px) { .landing-grid { grid-template-columns: repeat(2, 430px); } }
+        @media (min-width: 1420px) { .landing-grid { grid-template-columns: repeat(3, 430px); } }
+        @media (min-width: 1880px) { .landing-grid { grid-template-columns: repeat(4, 430px); } }
+        @media (min-width: 2550px) { .landing-grid { grid-template-columns: repeat(5, 430px); } }
+
+
+        /* Card Style - 430px 고정 */
+        .card { 
+            width: 430px; 
+            max-width: 100%; 
+            background: #fff; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            border: 1px solid var(--border-light); 
+            cursor: pointer; 
+            transition: 0.3s; 
+            position: relative; 
+        }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        
+        /* 썸네일 고정 사이즈 430x232 */
+        .card-thumb { 
+            position: relative; 
+            width: 100%; 
+            height: 232px; 
+            background: #f9f9f9; 
+            overflow: hidden; 
+        }
+        .card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+
+        .card-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); 
+            opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; z-index: 5;
+        }
+        .card:hover .card-overlay { opacity: 1; }
+        .ov-title { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+        .ov-meta { font-size: 11px; color: rgba(255,255,255,0.7); }
+        .ov-icons { display: flex; gap: 8px; }
+        .ov-icon-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; backdrop-filter: blur(4px); font-size: 12px; }
+
+        /* Modal Area */
+        #modalOverlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; 
+            backdrop-filter: blur(8px); padding: 20px;
+        }
+        .modal-container { 
+            background: #fff; width: 100%; max-width: 1300px; height: 90vh; 
+            display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; position: relative; 
+        }
+        @media (min-width: 1024px) { .modal-container { flex-direction: row; } }
+
+        .modal-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 2100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .modal-img-area { flex: 1; background: #f4f4f4; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+        .modal-img-list { width: 100%; max-width: 1000px; background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .modal-img-list img { width: 100%; display: block; }
+        .modal-img-list.is-mo-view { width: 100%; max-width: 480px; }
+
+        .modal-info-area { width: 100%; padding: 40px 30px; border-top: 1px solid var(--border-light); background: #fff; }
+        @media (min-width: 1024px) { .modal-info-area { width: 380px; border-top: none; border-left: 1px solid var(--border-light); height: 100%; overflow-y: auto; } }
+
+        .info-box { border: 1px solid #eee; border-radius: 16px; padding: 25px; }
+        .md-brand-txt { color: var(--main-orange); font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; }
+        .md-title-big { font-size: 22px; font-weight: 800; margin-bottom: 25px; line-height: 1.4; color: #111; }
+        .md-meta-info { margin-bottom: 30px; }
+        .md-meta-info p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #666; }
+        .md-meta-info b { color: #111; }
+
+        .md-device-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .md-device-btn { flex: 1; padding: 14px; border: 1px solid #eee; background: #fff; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; color: #aaa; }
+        .md-device-btn.active { background: var(--main-orange); color: #fff; border-color: var(--main-orange); }
+
+        .md-link-group { display: flex; gap: 10px; }
+        .md-link-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #f2f4f7; border-radius: 10px; text-decoration: none; color: #333; font-size: 13px; font-weight: 700; }
+
+        .pagination { display: flex; justify-content: center; gap: 8px; margin: 20px 0 80px; }
+        .page-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-light); background: #fff; cursor: pointer; font-size: 14px; font-weight: 600; }
+        .page-btn.active { background: var(--main-orange); color: #fff; border-color: var(--main-orange); }
+		
+		
+    </style>
+</head>
+<body>
+
+<div class="site-wrapper">
+    <header>
+        <div class="inner-container">
+            <div class="logo"><div class="logo-icon"></div>WeaD <span>Archive</span></div>
+            <nav class="gnb-menu">
+                <a href="#" class="active">랜딩페이지</a>
+                <a href="#">배너</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="inner-container">
+        <div class="header-main">
+            <h1>Archive</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="페이지명 또는 키워드 검색" onkeyup="handleSearch()">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="tab-container" id="tabContainer">
+                <button class="tab-btn active" onclick="filterByTab('all', this)">전체</button>
+                <button class="tab-btn" onclick="filterByTab('viaggio', this)">비아지오</button>
+                <button class="tab-btn" onclick="filterByTab('nordkin', this)">노르드킨</button>
+            </div>
+            <div class="count-info">결과: <b id="totalCount">0개</b></div>
+        </div>
+
+        <div class="main-content">
+            <div id="grid" class="landing-grid"></div>
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    <div id="modalOverlay" onclick="if(event.target === this) closeModal()">
+        <div class="modal-container">
+            <div class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
+            <div class="modal-img-area" id="modalImgScroll">
+                <div class="modal-img-list" id="modalImgList"></div>
+
+            </div>
+            <div class="modal-info-area">
+                <div class="info-box">
+                    <span id="mdBrand" class="md-brand-txt">BRAND</span>
+                    <h2 id="mdTitle" class="md-title-big">TITLE</h2>
+                    <div class="md-meta-info">
+                        <p>기획 <span><b id="mdPlanner">-</b></span></p>
+                        <p>디자인 <span><b id="mdDesigner">-</b></span></p>
+                    </div>
+                    <div class="md-device-group">
+                        <button id="btnPC" class="md-device-btn" onclick="switchDevice('pc')">Desktop</button>
+                        <button id="btnMO" class="md-device-btn" onclick="switchDevice('mo')">Mobile</button>
+                    </div>
+                    <div class="md-link-group">
+                        <a id="mdLiveBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-external-link-alt"></i> 라이브</a>
+                        <a id="mdFigmaBtn" href="#" target="_blank" class="md-link-btn"><i class="fab fa-figma"></i> 디자인</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://pfuwdbgnxkxcchjlwauc.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_GTnHAd2Q2wtlLjynoct2UA_r5RDvSPU';
+    const BUCKET_NAME = 'landing';
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let allItems = [], currentTab = 'all', currentPage = 1, itemsPerPage = 12, currentModalData = null;
+
+    async function init() {
+        const { data } = await supabaseClient.from('wead').select('*');
+        if (data) {
+            const pattern = /^[a-zA-Z0-9]+-\d{1,2}-\d{1,2}$/;
+            allItems = data.filter(i => pattern.test(i.page_name));
+            applyFilters();
+            loadMainFeatured();
+        }
+    }
+
+    async function loadMainFeatured() {
+        const { data } = await supabaseClient.from('wead').select('*').eq('is_main', true);
+        const container = document.getElementById('featuredGrid');
+        if(!container) return;
+        if(!data || data.length === 0) {
+            container.innerHTML = '<p style="font-size:13px; color:#999;">진행 중인 주요 프로젝트가 없습니다.</p>';
+            return;
+        }
+        const unique = Array.from(new Map(data.map(i => [i.page_name, i])).values());
+        container.innerHTML = unique.map(f => {
+            const root = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${f.brand}/${f.page_name}`;
+            return `
+                <div class="featured-card" onclick="openModal('${f.page_name}')">
+                    <div class="featured-badge">${f.brand.toUpperCase()}</div>
+                    <img src="${root}/pc/thum.jpg" onerror="this.src='${root}/mo/thum.jpg';">
+                </div>
+            `;
+        }).join('');
+    }
+
+    function applyFilters() {
+        let filtered = allItems;
+        if (currentTab !== 'all') filtered = filtered.filter(i => i.brand === currentTab);
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        if (query) filtered = filtered.filter(i => i.page_name.toLowerCase().includes(query));
+
+        filtered.sort((a, b) => b.page_name.localeCompare(a.page_name, undefined, {numeric: true}));
+        const unique = Array.from(new Map(filtered.map(i => [i.page_name, i])).values());
+        
+        document.getElementById('totalCount').innerText = `${unique.length}개`;
+        const totalPages = Math.ceil(unique.length / itemsPerPage);
+        renderGrid(unique.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
+        renderPagination(totalPages);
+    }
+
+    function renderGrid(data) {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = data.map(f => {
+            const root = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${f.brand}/${f.page_name}`;
+            const containerId = `cid-${f.id.replace(/[^a-z0-9]/gi, '')}`;
+            return `
+                <div class="card" onclick="openModal('${f.page_name}')">
+                    <div class="card-thumb" id="${containerId}">
+                        <img src="${root}/pc/thum.jpg" onload="checkAspectRatio(this, '${containerId}')" onerror="this.src='${root}/mo/thum.jpg'">
+                        <div class="card-overlay">
+                            <div>
+                                <div class="ov-title">${f.page_name.toUpperCase()}</div>
+                                <div class="ov-meta">${f.planner || '-'} / ${f.designer || '-'}</div>
+                            </div>
+                            <div class="ov-icons"><span class="ov-icon-btn"><i class="fas fa-arrow-right"></i></span></div>
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    function checkAspectRatio(img, containerId) {
+        if (img.naturalHeight > img.naturalWidth) document.getElementById(containerId).classList.add('is-mobile');
+    }
+
+    function getLiveUrl(pageName, deviceType) {
+        let name = pageName.toUpperCase();
+        let domain = "https://www.viaggio.co.kr";
+        let path = (deviceType === 'pc') ? "/on_land/" : "/mo_land/";
+        if (name.startsWith('V6-')) domain = "https://bike.w-rental.co.kr/rental/Rental_V6";
+        else if (name.startsWith('HX5P-')) domain = "https://bike.w-rental.co.kr/rental/Rental_HX5";
+        else if (name.startsWith('HLG-')) domain = "https://health.nordkin.co.kr/health/TM_HLG";
+        return `${domain}${path}${name}.html`;
+    }
+
+    function openModal(pageName) {
+        const pcData = allItems.find(i => i.page_name === pageName && i.type === 'pc');
+        const moData = allItems.find(i => i.page_name === pageName && i.type === 'mo');
+        currentModalData = { pageName, pcData, moData };
+        const base = pcData || moData;
+        
+        document.getElementById('mdBrand').innerText = base.brand.toUpperCase();
+        document.getElementById('mdTitle').innerText = pageName.toUpperCase();
+        document.getElementById('mdPlanner').innerText = base.planner || '-';
+        document.getElementById('mdDesigner').innerText = base.designer || '-';
+        document.getElementById('mdFigmaBtn').href = `https://www.figma.com/file/${base.file_key}/?node-id=${base.id}`;
+        
+        document.getElementById('btnPC').style.display = pcData ? 'block' : 'none';
+        document.getElementById('btnMO').style.display = moData ? 'block' : 'none';
+        
+        document.getElementById('modalOverlay').style.display = 'flex';
+        switchDevice(pcData ? 'pc' : 'mo');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function switchDevice(type) {
+        const list = document.getElementById('modalImgList'); 
+        list.innerHTML = '';
+        list.classList.toggle('is-mo-view', type === 'mo');
+        const base = currentModalData.pcData || currentModalData.moData;
+        
+        for(let i=1; i<=20; i++) {
+            const img = document.createElement('img');
+            img.src = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${base.brand}/${currentModalData.pageName}/${type}/${i.toString().padStart(2,'0')}.jpg`;
+            img.onerror = function() { this.remove(); }; 
+            list.appendChild(img);
+        }
+        
+        document.getElementById('btnPC').classList.toggle('active', type === 'pc');
+        document.getElementById('btnMO').classList.toggle('active', type === 'mo');
+        document.getElementById('mdLiveBtn').href = getLiveUrl(currentModalData.pageName, type);
+        document.getElementById('modalImgScroll').scrollTop = 0;
+    }
+
+    function renderPagination(total) {
+        const pbox = document.getElementById('pagination'); pbox.innerHTML = '';
+        if(total <= 1) return;
+        for (let i = 1; i <= total; i++) {
+            const btn = document.createElement('button');
+            btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+            btn.innerText = i;
+            btn.onclick = () => { currentPage = i; applyFilters(); window.scrollTo({top: 450, behavior: 'smooth'}); };
+            pbox.appendChild(btn);
+        }
+    }
+
+    function filterByTab(tab, btn) { 
+        currentTab = tab; currentPage = 1; 
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+        btn.classList.add('active'); applyFilters(); 
+    }
+
+    function handleSearch() { currentPage = 1; applyFilters(); }
+    function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
+    
+    init();
+</script>
+</body>
+</html>
