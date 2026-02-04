@@ -29,8 +29,12 @@
         .logo { display: flex; align-items: center; font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
         .logo-icon { width: 22px; height: 22px; background: linear-gradient(135deg, #f3946a, #8e44ad); margin-right: 8px; border-radius: 4px; }
         .logo span { color: var(--main-orange); }
+        .gnb-menu { display: flex; gap: 30px; }
+        .gnb-menu a { text-decoration: none; color: var(--text-grey); font-size: 16px; font-weight: 700; height: 70px; display: flex; align-items: center; position: relative; }
+        .gnb-menu a.active { color: var(--text-black); }
+        .gnb-menu a.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background-color: var(--text-black); }
 
-        /* Main Header */
+        /* Content Header */
         .header-main { padding: 50px 0 20px; display: flex; flex-direction: column; gap: 20px; }
         @media (min-width: 768px) { .header-main { flex-direction: row; justify-content: space-between; align-items: center; } }
         .header-main h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
@@ -38,81 +42,75 @@
         .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; }
         .search-container i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; }
 
+        /* Tabs */
+        .tab-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; }
+        .tab-btn.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
+        .count-info { font-size: 14px; color: #333; margin-bottom: 30px; }
+        .count-info b { color: var(--main-orange); }
+
         /* Grid */
         .landing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding-bottom: 60px; justify-content: center; }
         .card { width: 100%; max-width: 430px; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-light); cursor: pointer; transition: 0.3s; justify-self: center; }
         .card-thumb { position: relative; width: 100%; aspect-ratio: 430 / 232; background: #f9f9f9; overflow: hidden; }
         @media (min-width: 950px) { .landing-grid { grid-template-columns: repeat(2, 430px); } }
         @media (min-width: 1420px) { .landing-grid { grid-template-columns: repeat(3, 430px); } }
+        @media (min-width: 1880px) { .landing-grid { grid-template-columns: repeat(4, 430px); } }
         .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
         .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; }
         .card:hover .card-overlay { opacity: 1; }
 
-        /* --- Modal Area --- */
+        /* --- Modal Area (독립 스크롤 구조) --- */
         #modalOverlay { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #f7f7f7; z-index: 2000; overflow: hidden;
+            background: #f7f7f7; z-index: 2000; justify-content: center; align-items: center; 
+            overflow: hidden;
         }
-        .modal-container { 
-            width: 100%; height: 100%; display: flex; justify-content: center; position: relative; 
-        }
-        .modal-wrap { 
-            display: flex; flex-direction: column; width: 100%; height: 100%; position: relative; 
-        }
-        @media (min-width: 1024px) { 
-            .modal-wrap { flex-direction: row; } 
-        }
+        .modal-container { width: 100%; height: 100vh; display: flex; justify-content: center; position: relative; }
+        .modal-wrap { display: flex; flex-direction: column; width: 100%; height: 100%; max-width: 1400px; position: relative; background: #f7f7f7; }
+        @media (min-width: 1024px) { .modal-wrap { flex-direction: row; } }
 
-        /* 왼쪽/상단 이미지 영역 */
+        /* Left: Image Area (상시 독립 스크롤 가능) */
         .modal-img-area { 
             flex: 1; height: 100%; overflow-y: auto; display: flex; flex-direction: column; 
-            align-items: center; padding: 40px 20px; background: #f7f7f7;
-            scrollbar-width: thin;
+            align-items: center; padding: 40px 20px; scrollbar-width: thin; 
         }
+        .modal-img-area::-webkit-scrollbar { width: 6px; }
+        .modal-img-area::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+        
         .modal-img-list { 
             width: 100%; background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
-            transition: max-width 0.3s ease; 
+            transition: max-width 0.3s ease-in-out; 
         }
         .modal-img-list.is-pc-view { max-width: 884px; }
         .modal-img-list.is-mo-view { max-width: 430px; }
         .modal-img-list img { width: 100%; display: block; }
 
-        /* 오른쪽/하단 정보 영역 */
+        /* Right: Info Area (모바일 하단 배치) */
         .modal-info-area { 
             width: 100%; padding: 20px; background: #fff; border-top: 1px solid var(--border-light);
-            z-index: 10;
         }
         @media (min-width: 1024px) { 
-            .modal-info-area { 
-                width: 340px; padding: 60px 20px; border-top: none; 
-                border-left: 1px solid var(--border-light); height: 100%; 
-            }
+            .modal-info-area { width: 340px; padding: 60px 20px; border-top: none; border-left: 1px solid var(--border-light); height: 100%; }
         }
-        .info-box { width: 100%; }
+        .info-box { background: #fff; border-radius: 12px; }
         
-        .modal-close { 
-            position: fixed; top: 20px; right: 20px; font-size: 20px; color: #333; 
-            cursor: pointer; z-index: 2200; background: rgba(255,255,255,0.9); 
-            width: 40px; height: 40px; display: flex; align-items: center; 
-            justify-content: center; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        .modal-close { position: fixed; top: 20px; right: 20px; font-size: 24px; color: #333; cursor: pointer; z-index: 2200; background: rgba(255,255,255,0.8); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
-        /* Typography & UI */
         .md-brand-txt { color: var(--main-orange); font-size: 12px; font-weight: 700; margin-bottom: 4px; display: block; }
-        .md-title-big { font-size: 18px; font-weight: 800; margin-bottom: 20px; color: #111; }
-        .md-meta-info { margin-bottom: 20px; }
-        .md-meta-info p { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #666; }
-        .md-meta-info p span { font-weight: 600; color: #111; }
+        .md-title-big { font-size: 18px; font-weight: 800; margin-bottom: 20px; line-height: 1.4; color: #333; }
+        .md-meta-info { margin-bottom: 20px; border-top: 1px solid #f5f5f5; padding-top: 15px; }
+        .md-meta-info p { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #888; }
+        .md-meta-info p span { font-weight: 600; color: #444; }
         .md-device-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        .md-device-btn { width: 100%; padding: 12px; border: 1px solid #eee; background: #fff; border-radius: 6px; font-weight: 600; cursor: pointer; color: #ccc; }
+        .md-device-btn { width: 100%; padding: 12px; border: 1px solid #eee; background: #fff; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; color: #ccc; }
         .md-device-btn.active { background: #FFA364; color: #fff; border-color: #FFA364; }
         .md-link-group { display: flex; gap: 8px; }
         .md-link-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; background: #f8f9fa; border-radius: 6px; text-decoration: none; color: #333; font-size: 11px; font-weight: 600; border: 1px solid #eee; }
 
-        /* Pagination */
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 40px 0 80px; }
-        .page-num { background: none; border: none; font-size: 16px; cursor: pointer; min-width: 35px; height: 35px; border-radius: 50%; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 40px 0 80px; }
+        .page-num { background: none; border: none; font-size: 18px; font-weight: 500; cursor: pointer; min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .page-num.active { background-color: var(--main-orange); color: #fff; }
     </style>
 </head>
@@ -122,7 +120,7 @@
     <header>
         <div class="inner-container">
             <div class="logo"><div class="logo-icon"></div>WeaD <span>Archive</span></div>
-            <nav class="gnb-menu"><a href="#" class="active">랜딩페이지</a></nav>
+            <nav class="gnb-menu"><a href="#" class="active">랜딩페이지</a><a href="#">배너</a></nav>
         </div>
     </header>
 
@@ -145,7 +143,6 @@
                 <div class="modal-img-area" id="modalImgScroll">
                     <div class="modal-img-list" id="modalImgList"></div>
                 </div>
-                
                 <div class="modal-info-area">
                     <div class="info-box">
                         <span id="mdBrand" class="md-brand-txt">BRAND</span>
@@ -160,7 +157,7 @@
                         </div>
                         <div class="md-link-group">
                             <a id="mdLiveBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-globe"></i> 라이브</a>
-                            <a id="mdFigmaBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-file-signature"></i> 디자인</a>
+                            <a id="mdFigmaBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-file-signature"></i> 디자인 파일</a>
                         </div>
                     </div>
                 </div>
@@ -176,7 +173,7 @@
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let allItems = [], currentPage = 1, currentModalData = null;
+    let allItems = [], currentPage = 1;
 
     async function init() {
         const { data } = await supabaseClient.from('wead').select('*');
@@ -186,25 +183,17 @@
         }
     }
 
-    /* 썸네일 우선순위 로직 반영 함수 */
-    function getThumbnailUrl(f) {
-        const root = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${f.brand}/${f.page_name}`;
-        // thum.jpg를 기본으로 리턴하고, HTML onerror에서 다음 우선순위로 넘김
-        return `${root}/pc/thum.jpg`;
-    }
-
     function renderGrid(data) {
-        document.getElementById('grid').innerHTML = data.map(f => {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = data.map(f => {
             const root = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${f.brand}/${f.page_name}`;
-            // 우선순위: thum.jpg -> pc/01.jpg -> mo/01.jpg
+            /* [썸네일 우선순위: thum.jpg -> pc/01.jpg -> mo/01.jpg] */
             return `
                 <div class="card" onclick="openModal('${f.page_name}')">
                     <div class="card-thumb">
                         <img src="${root}/pc/thum.jpg" 
                              onerror="this.onerror=function(){this.onerror=function(){this.src='https://via.placeholder.com/430x232?text=No+Image'};this.src='${root}/mo/01.jpg'};this.src='${root}/pc/01.jpg';">
-                        <div class="card-overlay">
-                            <div>${f.page_name.toUpperCase()}</div>
-                        </div>
+                        <div class="card-overlay"><div><div class="ov-title">${f.page_name.toUpperCase()}</div></div></div>
                     </div>
                 </div>`;
         }).join('');
@@ -215,31 +204,32 @@
         const moData = allItems.find(i => i.page_name === pageName && i.type === 'mo');
         currentModalData = { pageName, pcData, moData };
         const base = pcData || moData;
-        
         document.getElementById('mdBrand').innerText = base.brand.toUpperCase();
         document.getElementById('mdTitle').innerText = pageName.toUpperCase();
         document.getElementById('mdPlanner').innerText = base.planner || '-';
         document.getElementById('mdDesigner').innerText = base.designer || '-';
-        document.getElementById('modalOverlay').style.display = 'block';
-        
+        document.getElementById('mdFigmaBtn').href = `https://www.figma.com/file/${base.file_key}/?node-id=${base.id}`;
+        document.getElementById('btnPC').style.display = pcData ? 'block' : 'none';
+        document.getElementById('btnMO').style.display = moData ? 'block' : 'none';
+        document.getElementById('modalOverlay').style.display = 'flex';
         switchDevice(pcData ? 'pc' : 'mo');
         document.body.style.overflow = 'hidden';
     }
 
     function switchDevice(type) {
-        const list = document.getElementById('modalImgList');
+        const list = document.getElementById('modalImgList'); 
         list.innerHTML = '';
-        list.className = `modal-img-list ${type === 'pc' ? 'is-pc-view' : 'is-mo-view'}`;
-        
+        list.classList.remove('is-pc-view', 'is-mo-view');
+        list.classList.add(type === 'pc' ? 'is-pc-view' : 'is-mo-view');
         const base = currentModalData.pcData || currentModalData.moData;
         for(let i=1; i<=20; i++) {
             const img = document.createElement('img');
             img.src = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${base.brand}/${currentModalData.pageName}/${type}/${i.toString().padStart(2,'0')}.jpg`;
-            img.onerror = function() { this.remove(); }; 
-            list.appendChild(img);
+            img.onerror = function() { this.remove(); }; list.appendChild(img);
         }
         document.getElementById('btnPC').classList.toggle('active', type === 'pc');
         document.getElementById('btnMO').classList.toggle('active', type === 'mo');
+        document.getElementById('mdLiveBtn').href = getLiveUrl(currentModalData.pageName, type);
         document.getElementById('modalImgScroll').scrollTop = 0;
     }
 
@@ -248,20 +238,32 @@
         unique.sort((a, b) => b.page_name.localeCompare(a.page_name, undefined, {numeric: true}));
         renderGrid(unique.slice((currentPage - 1) * 20, currentPage * 20));
         renderPagination(Math.ceil(unique.length / 20));
-        document.getElementById('totalCount').innerText = `${unique.length}개`;
+    }
+
+    function getLiveUrl(pageName, deviceType) {
+        let name = pageName.toUpperCase();
+        let domain = "https://www.viaggio.co.kr";
+        let path = (deviceType === 'pc') ? "/on_land/" : "/mo_land/";
+        if (name.startsWith('V6-')) domain = "https://bike.w-rental.co.kr/rental/Rental_V6";
+        else if (name.startsWith('HX5P-')) domain = "https://bike.w-rental.co.kr/rental/Rental_HX5";
+        else if (name.startsWith('HLG-')) domain = "https://health.nordkin.co.kr/health/TM_HLG";
+        return `${domain}${path}${name}.html`;
     }
 
     function renderPagination(total) {
         const pbox = document.getElementById('pagination'); pbox.innerHTML = '';
+        if(total <= 1) return;
         for (let i = 1; i <= total; i++) {
             const btn = document.createElement('button');
-            btn.className = `page-num ${i === currentPage ? 'active' : ''}`; btn.innerText = i;
-            btn.onclick = () => { currentPage = i; applyFilters(); }; pbox.appendChild(btn);
+            btn.className = `page-num ${i === currentPage ? 'active' : ''}`;
+            btn.innerText = i;
+            btn.onclick = () => { currentPage = i; applyFilters(); window.scrollTo(0, 0); };
+            pbox.appendChild(btn);
         }
     }
 
     function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
-    function handleSearch() { /* 검색 로직 생략(기존 유지 가능) */ }
+    function handleSearch() { currentPage = 1; applyFilters(); }
     init();
 </script>
 </body>
