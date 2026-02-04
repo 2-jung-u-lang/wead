@@ -13,22 +13,45 @@
             --text-grey: #666;
             --border-light: #eee;
             --bg-light: #f8f8f8;
+            --max-width: 100%;
         }
 
         /* Base Setup */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
-        body { background-color: #ffffff; color: var(--text-black); overflow-x: hidden; }
+        
+        body { 
+            background-color: #ffffff; 
+            color: var(--text-black); 
+            overflow-x: hidden;
+        }
 
-        .site-wrapper { max-width: 100%; margin: 0 auto; background-color: #fff; min-height: 100vh; position: relative; }
+        /* 1920px Wrapper */
+        .site-wrapper {
+            max-width: 100%; 
+            margin: 0 auto;
+            background-color: #fff;
+            min-height: 100vh;
+            position: relative;
+        }
+
         .inner-container { max-width: 100%; margin: 0 auto; padding: 0 20px; }
         @media (min-width: 768px) { .inner-container { padding: 0 50px; } }
 
         /* Header */
-        header { height: 70px; border-bottom: 1px solid var(--border-light); background: #fff; position: sticky; top: 0; z-index: 1000; }
-        header .inner-container { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+        header { 
+            height: 70px; 
+            border-bottom: 1px solid var(--border-light); 
+            background: #fff; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        header .inner-container { display: flex; align-items: center; justify-content: space-between; height: 100%; padding-top: 0; padding-bottom: 0; }
+        
         .logo { display: flex; align-items: center; font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
         .logo-icon { width: 22px; height: 22px; background: linear-gradient(135deg, #f3946a, #8e44ad); margin-right: 8px; border-radius: 4px; }
         .logo span { color: var(--main-orange); }
+
         .gnb-menu { display: flex; gap: 30px; }
         .gnb-menu a { text-decoration: none; color: var(--text-grey); font-size: 16px; font-weight: 700; height: 70px; display: flex; align-items: center; position: relative; }
         .gnb-menu a.active { color: var(--text-black); }
@@ -37,86 +60,115 @@
         /* Content Header */
         .header-main { padding: 50px 0 20px; display: flex; flex-direction: column; gap: 20px; }
         @media (min-width: 768px) { .header-main { flex-direction: row; justify-content: space-between; align-items: center; } }
+        
         .header-main h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
         .search-container { position: relative; width: 100%; max-width: 350px; }
-        .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; }
+        .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; font-size: 14px; }
         .search-container i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; }
 
-        /* Tabs */
+        /* Tabs & Info */
         .tab-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; }
+        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; transition: 0.2s; }
         .tab-btn.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
         .count-info { font-size: 14px; color: #333; margin-bottom: 30px; }
         .count-info b { color: var(--main-orange); }
 
-        /* Grid */
-        .landing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding-bottom: 60px; justify-content: center; }
-        .card { width: 100%; max-width: 430px; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-light); cursor: pointer; transition: 0.3s; justify-self: center; }
-        .card-thumb { position: relative; width: 100%; aspect-ratio: 430 / 232; background: #f9f9f9; overflow: hidden; }
+        /* Grid System */
+        .landing-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 24px; 
+            padding-bottom: 60px;
+            justify-content: center;
+        }
+        .card { 
+            width: 100%; 
+            max-width: 430px; 
+            background: #fff; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            border: 1px solid var(--border-light); 
+            cursor: pointer; 
+            transition: 0.3s; 
+            position: relative; 
+            justify-self: center; 
+        }
+        .card-thumb { 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 430 / 232; 
+            background: #f9f9f9; 
+            overflow: hidden; 
+        }
+
         @media (min-width: 950px) { .landing-grid { grid-template-columns: repeat(2, 430px); } }
         @media (min-width: 1420px) { .landing-grid { grid-template-columns: repeat(3, 430px); } }
         @media (min-width: 1880px) { .landing-grid { grid-template-columns: repeat(4, 430px); } }
+
         .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; }
+        .card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+
+        .card-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); 
+            opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; z-index: 5;
+        }
         .card:hover .card-overlay { opacity: 1; }
-
-        /* --- Modal Area (독립 스크롤 구조 수정) --- */
-        #modalOverlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #f7f7f7; z-index: 2000; justify-content: center; align-items: center; 
-            overflow: hidden;
-        }
-        .modal-container { width: 100%; height: 100vh; display: flex; justify-content: center; position: relative; }
-        
-        /* 모바일에서는 세로 배치, PC에서는 가로 배치 */
-        .modal-wrap { display: flex; flex-direction: column; width: 100%; max-width: 1400px; height: 100%; position: relative; background: #f7f7f7; }
-        @media (min-width: 1024px) { .modal-wrap { flex-direction: row; } }
-
-        /* 상단 이미지 영역: flex: 1과 overflow-y: auto로 독립 스크롤 구현 */
-        .modal-img-area { 
-            flex: 1; height: 100%; overflow-y: auto; display: flex; flex-direction: column; 
-            align-items: center; padding: 40px 20px; scrollbar-width: thin; 
-        }
-        .modal-img-area::-webkit-scrollbar { width: 6px; }
-        .modal-img-area::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
-        
-        .modal-img-list { 
-            width: 100%; background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
-            transition: max-width 0.3s ease-in-out; 
-        }
-        .modal-img-list.is-pc-view { max-width: 884px; }
-        .modal-img-list.is-mo-view { max-width: 430px; }
-        .modal-img-list img { width: 100%; display: block; }
-
-        /* 하단 정보 영역: 모바일에서는 하단에 고정된 형태 */
-        .modal-info-area { 
-            width: 100%; padding: 20px; background: #fff; border-top: 1px solid var(--border-light);
-            flex-shrink: 0; /* 높이 유지 */
-        }
-        @media (min-width: 1024px) { 
-            .modal-info-area { width: 340px; padding: 60px 20px; border-top: none; border-left: 1px solid var(--border-light); height: 100%; }
-        }
-        .info-box { background: #fff; border-radius: 12px; }
-        
-        .modal-close { position: fixed; top: 20px; right: 20px; font-size: 24px; color: #333; cursor: pointer; z-index: 2200; background: rgba(255,255,255,0.8); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-
-        /* Typography & Buttons */
-        .md-brand-txt { color: var(--main-orange); font-size: 12px; font-weight: 700; margin-bottom: 4px; display: block; }
-        .md-title-big { font-size: 18px; font-weight: 800; margin-bottom: 20px; line-height: 1.4; color: #333; }
-        .md-meta-info { margin-bottom: 20px; border-top: 1px solid #f5f5f5; padding-top: 15px; }
-        .md-meta-info p { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #888; }
-        .md-meta-info p span { font-weight: 600; color: #444; }
-        .md-device-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        .md-device-btn { width: 100%; padding: 12px; border: 1px solid #eee; background: #fff; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; color: #ccc; }
-        .md-device-btn.active { background: #FFA364; color: #fff; border-color: #FFA364; }
-        .md-link-group { display: flex; gap: 8px; }
-        .md-link-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; background: #f8f9fa; border-radius: 6px; text-decoration: none; color: #333; font-size: 11px; font-weight: 600; border: 1px solid #eee; }
+        .ov-title { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+        .ov-meta { font-size: 11px; color: rgba(255,255,255,0.7); }
 
         /* Pagination */
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 40px 0 80px; }
-        .page-num { background: none; border: none; font-size: 18px; font-weight: 500; cursor: pointer; min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 40px 0 80px; flex-wrap: wrap; }
+        .page-num { background: none; border: none; font-size: 18px; font-weight: 500; color: #333; cursor: pointer; min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
         .page-num.active { background-color: var(--main-orange); color: #fff; }
+
+        /* --- [디자인 유지] Modal Area --- */
+        #modalOverlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; 
+            backdrop-filter: blur(8px); padding: 20px; 
+        }
+        
+        /* 1188px 중앙 컨테이너 유지 */
+        .modal-wrap { width: 1188px; max-width: 100%; margin: 0 auto; height: 90vh; display: flex; }
+        
+        .modal-container { 
+            background: #fff; width: 100%; height: 100%; display: flex; flex-direction: column; 
+            border-radius: 20px; overflow: hidden; position: relative; 
+        }
+        @media (min-width: 1024px) { .modal-container { flex-direction: row; } }
+
+        .modal-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 2100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+        /* 이미지 영역 (모바일 독립 스크롤 구현) */
+        .modal-img-area { 
+            flex: 1; background: #F7F8F9; overflow-y: auto; display: flex; flex-direction: column; 
+            align-items: center; padding: 40px 20px; 
+        }
+        .modal-img-list { width: 100%; background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .modal-img-list img { width: 100%; display: block; }
+        
+        /* 이미지 사이즈 요구사항 반영 */
+        .modal-img-list.is-pc-view { max-width: 884px; }
+        .modal-img-list.is-mo-view { max-width: 430px; }
+
+        /* 정보 영역 디자인 유지 */
+        .modal-info-area { width: 100%; padding: 40px 30px; border-top: 1px solid var(--border-light); background: #fff; flex-shrink: 0; }
+        @media (min-width: 1024px) { 
+            .modal-info-area { width: 380px; border-top: none; border-left: 1px solid var(--border-light); height: 100%; overflow-y: auto; } 
+        }
+        .info-box { border: 1px solid #eee; border-radius: 16px; padding: 25px; }
+        
+        .md-brand-txt { color: var(--main-orange); font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; }
+        .md-title-big { font-size: 22px; font-weight: 800; margin-bottom: 25px; line-height: 1.4; color: #111; }
+        .md-meta-info { margin-bottom: 30px; }
+        .md-meta-info p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #666; }
+        .md-meta-info b { color: #111; }
+        .md-device-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .md-device-btn { flex: 1; padding: 14px; border: 1px solid #eee; background: #fff; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; color: #aaa; }
+        .md-device-btn.active { background: var(--main-orange); color: #fff; border-color: var(--main-orange); }
+        .md-link-group { display: flex; gap: 10px; }
+        .md-link-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #f2f4f7; border-radius: 10px; text-decoration: none; color: #333; font-size: 13px; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -125,7 +177,10 @@
     <header>
         <div class="inner-container">
             <div class="logo"><div class="logo-icon"></div>WeaD <span>Archive</span></div>
-            <nav class="gnb-menu"><a href="#" class="active">랜딩페이지</a><a href="#">배너</a></nav>
+            <nav class="gnb-menu">
+                <a href="#" class="active">랜딩페이지</a>
+                <a href="#">배너</a>
+            </nav>
         </div>
     </header>
 
@@ -154,27 +209,26 @@
     </div>
 
     <div id="modalOverlay" onclick="if(event.target === this) closeModal()">
-        <div class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
-        <div class="modal-container">
-            <div class="modal-wrap">
+        <div class="modal-wrap">
+            <div class="modal-container">
+                <div class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
                 <div class="modal-img-area" id="modalImgScroll">
                     <div class="modal-img-list" id="modalImgList"></div>
                 </div>
-                
                 <div class="modal-info-area">
                     <div class="info-box">
                         <span id="mdBrand" class="md-brand-txt">BRAND</span>
                         <h2 id="mdTitle" class="md-title-big">TITLE</h2>
                         <div class="md-meta-info">
-                            <p>기획 <span id="mdPlanner">-</span></p>
-                            <p>디자인 <span id="mdDesigner">-</span></p>
+                            <p>기획 <span><b id="mdPlanner">-</b></span></p>
+                            <p>디자인 <span><b id="mdDesigner">-</b></span></p>
                         </div>
                         <div class="md-device-group">
                             <button id="btnPC" class="md-device-btn" onclick="switchDevice('pc')">PC</button>
                             <button id="btnMO" class="md-device-btn" onclick="switchDevice('mo')">모바일</button>
                         </div>
                         <div class="md-link-group">
-                            <a id="mdLiveBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-globe"></i> 라이브</a>
+                            <a id="mdLiveBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-external-link-alt"></i> 라이브</a>
                             <a id="mdFigmaBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-file-signature"></i> 디자인 파일</a>
                         </div>
                     </div>
@@ -219,7 +273,7 @@
         const grid = document.getElementById('grid');
         grid.innerHTML = data.map(f => {
             const root = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${f.brand}/${f.page_name}`;
-            /* [수정된 썸네일 우선순위 로직 적용] */
+            /* [수정] 썸네일 우선순위: thum.jpg -> pc/01.jpg -> mo/01.jpg */
             return `
                 <div class="card" onclick="openModal('${f.page_name}')">
                     <div class="card-thumb">
@@ -253,6 +307,8 @@
     function switchDevice(type) {
         const list = document.getElementById('modalImgList'); 
         list.innerHTML = '';
+        
+        // 이미지 너비 클래스 토글 (PC 884px / MO 430px)
         list.classList.remove('is-pc-view', 'is-mo-view');
         list.classList.add(type === 'pc' ? 'is-pc-view' : 'is-mo-view');
 
