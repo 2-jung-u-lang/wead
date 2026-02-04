@@ -27,7 +27,7 @@
 
         /* 1920px Wrapper */
         .site-wrapper {
-            max-width: 1920px; /* 요청하신 1920px 고정 */
+            max-width: 1920px; 
             margin: 0 auto;
             background-color: #fff;
             min-height: 100vh;
@@ -89,22 +89,51 @@
         .count-info { font-size: 14px; color: #333; margin-bottom: 30px; }
         .count-info b { color: var(--main-orange); }
 
-        /* Grid System - 4x5 고정 */
+        /* --- [수정] Grid System: 최소 2열 유지 --- */
         .landing-grid { 
             display: grid; 
-            grid-template-columns: repeat(1, 430px); 
+            /* 기본(가장 작을 때) 2열 설정 */
+            grid-template-columns: repeat(2, 1fr); 
             gap: 24px; 
             padding-bottom: 60px;
             justify-content: center;
         }
-        @media (min-width: 950px) { .landing-grid { grid-template-columns: repeat(2, 430px); } }
-        @media (min-width: 1420px) { .landing-grid { grid-template-columns: repeat(3, 430px); } }
-        @media (min-width: 1840px) { .landing-grid { grid-template-columns: repeat(4, 430px); } }
 
-        .card { width: 430px; max-width: 100%; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-light); cursor: pointer; transition: 0.3s; position: relative; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        /* 카드가 지정된 430px을 넘지 않도록 설정 */
+        .card { 
+            width: 100%; 
+            max-width: 430px; 
+            background: #fff; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            border: 1px solid var(--border-light); 
+            cursor: pointer; 
+            transition: 0.3s; 
+            position: relative; 
+            justify-self: center; /* 그리드 내 중앙 정렬 */
+        }
         
-        .card-thumb { position: relative; width: 100%; height: 232px; background: #f9f9f9; overflow: hidden; }
+        /* 썸네일: 430x232 비율 유지 (aspect-ratio 사용) */
+        .card-thumb { 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 430 / 232; 
+            background: #f9f9f9; 
+            overflow: hidden; 
+        }
+
+        /* 데스크탑에서 430px 고정 및 열 개수 확장 */
+        @media (min-width: 950px) {
+            .landing-grid { grid-template-columns: repeat(2, 430px); }
+        }
+        @media (min-width: 1420px) {
+            .landing-grid { grid-template-columns: repeat(3, 430px); }
+        }
+        @media (min-width: 1880px) { 
+            .landing-grid { grid-template-columns: repeat(4, 430px); } 
+        }
+
+        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
         .card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
 
         .card-overlay { 
@@ -119,84 +148,33 @@
         .ov-icon-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; backdrop-filter: blur(4px); font-size: 12px; }
 
         /* 페이징 스타일 */
-        .pagination { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 20px; 
-            margin: 40px 0 80px; 
-        }
-        .page-num {
-            background: none;
-            border: none;
-            font-size: 18px;
-            font-weight: 500;
-            color: #333;
-            cursor: pointer;
-            min-width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: 0.2s;
-        }
-        .page-num.active {
-            background-color: var(--main-orange);
-            color: #fff;
-        }
-        .page-arrow {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid #eee;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #ccc;
-            font-size: 16px;
-            transition: 0.2s;
-        }
-        .page-arrow.enabled {
-            border-color: #333;
-            color: #333;
-        }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 40px 0 80px; flex-wrap: wrap; }
+        .page-num { background: none; border: none; font-size: 18px; font-weight: 500; color: #333; cursor: pointer; min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
+        .page-num.active { background-color: var(--main-orange); color: #fff; }
+        .page-arrow { width: 44px; height: 44px; border-radius: 50%; border: 1px solid #eee; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #ccc; font-size: 16px; transition: 0.2s; }
+        .page-arrow.enabled { border-color: #333; color: #333; }
         .page-dots { font-size: 18px; color: #333; letter-spacing: 2px; }
 
         /* Modal Area */
-        #modalOverlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; 
-            backdrop-filter: blur(8px); padding: 20px;
-        }
-        .modal-container { 
-            background: #fff; width: 100%; max-width: 1300px; height: 90vh; 
-            display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; position: relative; 
-        }
+        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 20px; }
+        .modal-container { background: #fff; width: 100%; max-width: 1300px; height: 90vh; display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; position: relative; }
         @media (min-width: 1024px) { .modal-container { flex-direction: row; } }
-
         .modal-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 2100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .modal-img-area { flex: 1; background: #f4f4f4; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
         .modal-img-list { width: 100%; max-width: 1000px; background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
         .modal-img-list img { width: 100%; display: block; }
         .modal-img-list.is-mo-view { width: 100%; max-width: 480px; }
-
         .modal-info-area { width: 100%; padding: 40px 30px; border-top: 1px solid var(--border-light); background: #fff; }
         @media (min-width: 1024px) { .modal-info-area { width: 380px; border-top: none; border-left: 1px solid var(--border-light); height: 100%; overflow-y: auto; } }
-
         .info-box { border: 1px solid #eee; border-radius: 16px; padding: 25px; }
         .md-brand-txt { color: var(--main-orange); font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; }
         .md-title-big { font-size: 22px; font-weight: 800; margin-bottom: 25px; line-height: 1.4; color: #111; }
         .md-meta-info { margin-bottom: 30px; }
         .md-meta-info p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #666; }
         .md-meta-info b { color: #111; }
-
         .md-device-group { display: flex; gap: 10px; margin-bottom: 15px; }
         .md-device-btn { flex: 1; padding: 14px; border: 1px solid #eee; background: #fff; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; color: #aaa; }
         .md-device-btn.active { background: var(--main-orange); color: #fff; border-color: var(--main-orange); }
-
         .md-link-group { display: flex; gap: 10px; }
         .md-link-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #f2f4f7; border-radius: 10px; text-decoration: none; color: #333; font-size: 13px; font-weight: 700; }
     </style>
@@ -273,7 +251,7 @@
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    /* 4x5(20개) 설정을 위해 itemsPerPage를 20으로 변경 */
+    /* 20개 노출 (2x10 또는 4x5) */
     let allItems = [], currentTab = 'all', currentPage = 1, itemsPerPage = 20, currentModalData = null;
 
     async function init() {
@@ -378,21 +356,15 @@
         if (total <= 7) {
             for (let i = 1; i <= total; i++) showPages.push(i);
         } else {
-            if (currentPage <= 4) {
-                showPages.push(1, 2, 3, 4, 5, '...', total);
-            } else if (currentPage >= total - 3) {
-                showPages.push(1, '...', total - 4, total - 3, total - 2, total - 1, total);
-            } else {
-                showPages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', total);
-            }
+            if (currentPage <= 4) { showPages.push(1, 2, 3, 4, 5, '...', total); } 
+            else if (currentPage >= total - 3) { showPages.push(1, '...', total - 4, total - 3, total - 2, total - 1, total); } 
+            else { showPages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', total); }
         }
 
         showPages.forEach(p => {
             if (p === '...') {
                 const dots = document.createElement('span');
-                dots.className = 'page-dots';
-                dots.innerText = '...';
-                pbox.appendChild(dots);
+                dots.className = 'page-dots'; dots.innerText = '...'; pbox.appendChild(dots);
             } else {
                 const btn = document.createElement('button');
                 btn.className = `page-num ${p === currentPage ? 'active' : ''}`;
