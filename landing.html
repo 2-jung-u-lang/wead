@@ -268,26 +268,41 @@
         }).join('');
     }
 
-    function openModal(pageName) {
-        const pcData = allItems.find(i => i.page_name === pageName && i.type === 'pc');
-        const moData = allItems.find(i => i.page_name === pageName && i.type === 'mo');
-        currentModalData = { pageName, pcData, moData };
-        const base = pcData || moData;
-        document.getElementById('mdBrand').innerText = getKoName(base.brand);
-        document.getElementById('mdTitle').innerText = pageName;
-        document.getElementById('mdPlanner').innerText = base.planner || '-';
-        document.getElementById('mdDesigner').innerText = base.designer || '-';
-        const figmaBtn = document.getElementById('mdFigmaBtn');
-        if(base.file_key && base.file_key !== '-' && base.file_key !== '') {
-            figmaBtn.href = `https://www.figma.com/file/${base.file_key}/?node-id=${base.id}`;
-            figmaBtn.style.display = 'flex';
-        } else {
-            figmaBtn.style.display = 'none';
-        }
-        document.getElementById('modalOverlay').style.display = 'flex';
-        switchDevice(pcData ? 'pc' : 'mo');
-        document.body.style.overflow = 'hidden';
-    }
+	function openModal(pageName) {
+			const pcData = allItems.find(i => i.page_name === pageName && i.type === 'pc');
+			const moData = allItems.find(i => i.page_name === pageName && i.type === 'mo');
+			currentModalData = { pageName, pcData, moData };
+
+			const base = pcData || moData;
+			document.getElementById('mdBrand').innerText = getKoName(base.brand);
+			document.getElementById('mdTitle').innerText = pageName;
+			document.getElementById('mdPlanner').innerText = base.planner || '-';
+			document.getElementById('mdDesigner').innerText = base.designer || '-';
+
+			// --- [수정 구간] 버튼 노출 제어 ---
+			const btnPC = document.getElementById('btnPC');
+			const btnMO = document.getElementById('btnMO');
+
+			// PC 데이터가 없으면 PC 버튼 숨김, 있으면 보임
+			btnPC.style.display = pcData ? 'block' : 'none';
+			// 모바일 데이터가 없으면 모바일 버튼 숨김, 있으면 보임
+			btnMO.style.display = moData ? 'block' : 'none';
+
+			const figmaBtn = document.getElementById('mdFigmaBtn');
+			if(base.file_key && base.file_key !== '-' && base.file_key !== '') {
+				figmaBtn.href = `https://www.figma.com/file/${base.file_key}/?node-id=${base.id}`;
+				figmaBtn.style.display = 'flex';
+			} else {
+				figmaBtn.style.display = 'none';
+			}
+
+			document.getElementById('modalOverlay').style.display = 'flex';
+
+			// 데이터가 존재하는 디바이스를 우선적으로 띄움 (PC 우선, 없으면 MO)
+			switchDevice(pcData ? 'pc' : 'mo');
+
+			document.body.style.overflow = 'hidden';
+		}
 
     function switchDevice(type) {
         const list = document.getElementById('modalImgList'); list.innerHTML = '';
