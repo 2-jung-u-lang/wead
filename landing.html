@@ -10,11 +10,13 @@
         :root { --main-orange: #FFA364; --text-black: #111; --text-grey: #666; --border-light: #eee; --bg-light: #f8f8f8; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
         body { background-color: #ffffff; color: var(--text-black); overflow-x: hidden; padding-top: 60px; }
-        .site-wrapper { max-width: 100%; margin: 0 auto; background-color: #fff; min-height: 100vh; position: relative; }
-        .inner-container { max-width: 100%; margin: 0 auto; padding: 0 20px; }
-        @media (min-width: 768px) { .inner-container { padding: 0 50px; } }
+        
+        .site-wrapper { width: 100%; margin: 0 auto; background-color: #fff; min-height: 100vh; position: relative; }
+        
+        /* [수정] 컨테이너 가로 100% 및 여백 설정 */
+        .inner-container { width: 100%; margin: 0 auto; padding: 0 40px; }
 
-        /* --- [수정] 상단 메뉴: 가로 100% 및 로고 옆 메뉴 밀착 디자인 --- */
+        /* --- 상단 메뉴: 가로 100% 및 로고 옆 메뉴 밀착 디자인 --- */
         .top-nav {
             position: fixed;
             top: 0; left: 0; 
@@ -29,69 +31,98 @@
             padding: 0 40px; 
             display: flex; 
             align-items: center; 
-            justify-content: flex-start; /* 로고와 메뉴 왼쪽 정렬 */
-            gap: 60px; /* 로고와 메뉴 사이 간격 */
+            justify-content: flex-start;
+            gap: 60px;
         }
-        .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; text-decoration: none; color: #1a1a1a; }
-        .logo-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #ff8a00, #ff5c00, #9c27b0); border-radius: 4px; }
+        .nav-logo { display: flex; align-items: center; text-decoration: none; }
+        .nav-logo img { height: 73px; width: auto; display: block; }
+        
         .nav-links { display: flex; gap: 30px; }
         .nav-links a { text-decoration: none; color: var(--text-grey); font-size: 15px; font-weight: 700; transition: color 0.2s; position: relative; }
         .nav-links a.active { color: #1a1a1a; }
         .nav-links a.active::after { content: ''; position: absolute; bottom: -20px; left: 0; width: 100%; height: 3px; background-color: #1a1a1a; }
         .nav-links a:hover { color: #ff5c00; }
-        /* ----------------------------------------------------------- */
 
-        .header-main { padding: 50px 0 20px; display: flex; flex-direction: column; gap: 20px; }
-        @media (min-width: 768px) { .header-main { flex-direction: row; justify-content: space-between; align-items: center; } }
-        .header-main h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
-        .search-container { position: relative; width: 100%; max-width: 450px; }
-        .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; font-size: 14px; }
-        .search-container i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; }
-        .tab-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; text-transform: uppercase; }
-        .tab-btn.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
-        .count-info { font-size: 14px; color: #333; margin-bottom: 30px; }
-        .count-info b { color: var(--main-orange); }
-        .landing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding-bottom: 60px; justify-content: center; }
-        .card { width: 100%; max-width: 430px; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-light); cursor: pointer; transition: 0.3s; justify-self: center; }
-        .card-thumb { position: relative; width: 100%; aspect-ratio: 430 / 232; background: #f9f9f9; overflow: hidden; }
-        @media (min-width: 950px) { .landing-grid { grid-template-columns: repeat(2, 430px); } }
-        @media (min-width: 1420px) { .landing-grid { grid-template-columns: repeat(3, 430px); } }
-        @media (min-width: 1880px) { .landing-grid { grid-template-columns: repeat(4, 430px); } }
-        @media (min-width: 2400px) { .landing-grid { grid-template-columns: repeat(5, 430px); } }
+        /* --- 메인 헤더 영역 --- */
+        .header-main { padding: 50px 0 20px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 20px; }
+        .header-main h1 { font-size: clamp(28px, 3vw, 42px); font-weight: 800; letter-spacing: -1px; }
         
+        .search-container { position: relative; width: 100%; max-width: 450px; }
+        .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; font-size: 14px; transition: 0.2s; }
+        .search-container input:focus { border-color: var(--main-orange); background-color: #fff; }
+        .search-container i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; }
+
+        /* --- 브랜드 필터 탭 --- */
+        .tab-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .tab-btn.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
+        .count-info { font-size: 14px; color: #333; margin-bottom: 30px; font-weight: 700; }
+        .count-info b { color: var(--main-orange); }
+
+        /* --- [수정] 반응형 랜딩 그리드 시스템 (가로 100% 최적화) --- */
+        .landing-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); /* 기본 4열 */
+            gap: 24px; 
+            padding-bottom: 60px; 
+        }
+
+        .card { width: 100%; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-light); cursor: pointer; transition: 0.3s; }
         .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card-thumb { position: relative; width: 100%; aspect-ratio: 430 / 232; background: #f9f9f9; overflow: hidden; }
         .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        
         .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; z-index: 5; }
         .card:hover .card-overlay { opacity: 1; }
-        .ov-title { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
-        .ov-meta { font-size: 11px; color: rgba(255,255,255,0.7); }
-        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 0; }
+        .ov-title { font-size: 14px; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; }
+        .ov-meta { font-size: 12px; color: rgba(255,255,255,0.8); }
+
+        /* --- 모달 디자인 (고정) --- */
+        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-wrap { background: #fff; width: 100%; height: 100vh; display: flex; }
-        .modal-container { background: #fff; margin: 0 auto; width: 1188px; height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        @media (min-width: 1024px) { .modal-container { flex-direction: row; } }
+        .modal-container { background: #fff; margin: 0 auto; width: 1188px; height: 100%; display: flex; flex-direction: row; overflow: hidden; position: relative; }
         .modal-close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; z-index: 2100; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .modal-img-area { flex: 1; background: #F7F8F9; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
         .modal-img-list { width: 100%; background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
         .modal-img-list img { width: 100%; display: block; }
         .modal-img-list.is-pc-view { max-width: 884px; }
         .modal-img-list.is-mo-view { max-width: 430px; }
-        .modal-info-area { width: 100%; padding: 40px 30px; border-top: 1px solid var(--border-light); background: #fff; flex-shrink: 0; }
-        @media (min-width: 1024px) { .modal-info-area { width: 380px; border-top: none; border-left: 1px solid var(--border-light); height: 100%; overflow-y: auto; } }
+        .modal-info-area { width: 380px; padding: 40px 30px; background: #fff; border-left: 1px solid var(--border-light); height: 100%; overflow-y: auto; flex-shrink: 0; }
         .info-box { border: 1px solid #eee; border-radius: 16px; padding: 25px; }
         .md-brand-txt { color: var(--main-orange); font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; }
         .md-title-big { font-size: 22px; font-weight: 800; margin-bottom: 25px; line-height: 1.4; color: #111; }
         .md-meta-info { margin-bottom: 30px; }
         .md-meta-info p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #666; }
-        .md-meta-info b { color: #111; }
         .md-device-group { display: flex; gap: 10px; margin-bottom: 15px; }
         .md-device-btn { flex: 1; padding: 14px; border: 1px solid #eee; background: #fff; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; color: #aaa; }
         .md-device-btn.active { background: var(--main-orange); color: #fff; border-color: var(--main-orange); }
         .md-link-group { display: flex; gap: 10px; }
         .md-link-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #f2f4f7; border-radius: 10px; text-decoration: none; color: #333; font-size: 13px; font-weight: 700; }
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 40px 0 80px; flex-wrap: wrap; }
-        .page-num { background: none; border: none; font-size: 18px; font-weight: 500; color: #333; cursor: pointer; min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
-        .page-num.active { background-color: var(--main-orange); color: #fff; }
+        
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 40px 0 80px; }
+        .page-num { background: none; border: 1px solid #eee; font-size: 16px; font-weight: 500; color: #333; cursor: pointer; min-width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
+        .page-num.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
+
+        /* --- [반응형 핵심 미디어 쿼리] --- */
+        @media (max-width: 1600px) { .landing-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 1200px) {
+            .inner-container { padding: 0 30px; }
+            .landing-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal-container { width: 95%; height: 90vh; }
+        }
+        @media (max-width: 1024px) {
+            .modal-container { flex-direction: column; width: 100%; height: 100%; }
+            .modal-info-area { width: 100%; height: auto; border-left: none; border-top: 1px solid var(--border-light); }
+            .modal-img-area { padding: 60px 20px 20px; }
+        }
+        @media (max-width: 768px) {
+            .inner-container { padding: 0 20px; }
+            .header-main { flex-direction: column; align-items: flex-start; padding: 30px 0; }
+            .search-container { max-width: 100%; }
+            .landing-grid { grid-template-columns: 1fr; gap: 20px; }
+            .nav-content { padding: 0 20px; gap: 30px; }
+            .nav-links { gap: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -100,11 +131,10 @@
     <nav class="top-nav">
         <div class="nav-content">
             <a href="#" class="nav-logo">
-                <div class="logo-icon"></div>
-                WeaD Archive
+                <img src="./images/logo.jpg" alt="WeaD Logo">
             </a>
             <div class="nav-links">
-                <a href="landing.html" class="active">랜딩페이지</a>
+                <a href="#" class="active">랜딩페이지</a>
                 <a href="banner.html">배너</a>
             </div>
         </div>
@@ -112,7 +142,7 @@
 
     <div class="inner-container">
         <div class="header-main">
-            <h1>Landing Page</h1>
+            <h1>Archive</h1>
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="페이지, 기획자, 디자이너 검색" onkeyup="handleSearch()">
                 <i class="fas fa-search"></i>
@@ -157,6 +187,7 @@
 </div>
 
 <script>
+    /* 스크립트 로직은 원본 코드를 그대로 유지했습니다. */
     const SUPABASE_URL = 'https://pfuwdbgnxkxcchjlwauc.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_GTnHAd2Q2wtlLjynoct2UA_r5RDvSPU';
     const BUCKET_NAME = 'landing';
@@ -165,7 +196,6 @@
 
     let allItems = [], currentTab = 'all', currentPage = 1, itemsPerPage = 20, currentModalData = null;
 
-    // [추가] 브랜드 영문-한글 매핑표
     const brandKoMap = {
         'viaggio': '비아지오',
         'nordkin': '노르드킨',
@@ -177,7 +207,6 @@
         'hlg': 'HLG'
     };
 
-    // [추가] 한글 이름을 가져오는 도우미 함수
     const getKoName = (name) => {
         if(!name) return '';
         return brandKoMap[name.toLowerCase().trim()] || name.toUpperCase();
@@ -186,7 +215,6 @@
     async function init() {
         const { data } = await supabaseClient.from('wead').select('*');
         if (data) {
-
             const pattern = /^[a-zA-Z0-9]+-\d+-\d+$/;
             allItems = data.filter(i => pattern.test(i.page_name));
             renderBrandTabs();
@@ -199,7 +227,6 @@
         const brands = [...new Set(allItems.map(i => i.brand))].filter(Boolean).sort();
         let tabHtml = `<button class="tab-btn active" onclick="filterByTab('all', this)">전체</button>`;
         brands.forEach(brand => {
-            // [수정] 버튼 텍스트에 한글 이름 적용
             tabHtml += `<button class="tab-btn" onclick="filterByTab('${brand}', this)">${getKoName(brand)}</button>`;
         });
         container.innerHTML = tabHtml;
@@ -246,13 +273,10 @@
         const moData = allItems.find(i => i.page_name === pageName && i.type === 'mo');
         currentModalData = { pageName, pcData, moData };
         const base = pcData || moData;
-        
-        // [수정] 모달 브랜드 텍스트에 한글 이름 적용
         document.getElementById('mdBrand').innerText = getKoName(base.brand);
         document.getElementById('mdTitle').innerText = pageName;
         document.getElementById('mdPlanner').innerText = base.planner || '-';
         document.getElementById('mdDesigner').innerText = base.designer || '-';
-        
         const figmaBtn = document.getElementById('mdFigmaBtn');
         if(base.file_key && base.file_key !== '-' && base.file_key !== '') {
             figmaBtn.href = `https://www.figma.com/file/${base.file_key}/?node-id=${base.id}`;
@@ -260,15 +284,13 @@
         } else {
             figmaBtn.style.display = 'none';
         }
-
         document.getElementById('modalOverlay').style.display = 'flex';
         switchDevice(pcData ? 'pc' : 'mo');
         document.body.style.overflow = 'hidden';
     }
 
     function switchDevice(type) {
-        const list = document.getElementById('modalImgList'); 
-        list.innerHTML = '';
+        const list = document.getElementById('modalImgList'); list.innerHTML = '';
         list.classList.remove('is-pc-view', 'is-mo-view');
         list.classList.add(type === 'pc' ? 'is-pc-view' : 'is-mo-view');
         const base = currentModalData.pcData || currentModalData.moData;
@@ -279,52 +301,27 @@
         }
         document.getElementById('btnPC').classList.toggle('active', type === 'pc');
         document.getElementById('btnMO').classList.toggle('active', type === 'mo');
-        
         const liveUrl = getLiveUrl(currentModalData.pageName, type);
         const liveBtn = document.getElementById('mdLiveBtn');
-        if(liveUrl) {
-            liveBtn.href = liveUrl;
-            liveBtn.style.display = 'flex';
-        } else {
-            liveBtn.style.display = 'none';
-        }
+        if(liveUrl) { liveBtn.href = liveUrl; liveBtn.style.display = 'flex'; } else { liveBtn.style.display = 'none'; }
         document.getElementById('modalImgScroll').scrollTop = 0;
     }
 
     function getLiveUrl(pageName, deviceType) {
-        let name = pageName; 
-        let upperName = pageName.toUpperCase();
-        let domain = "";
-        let path = (deviceType === 'pc') ? "/on_land/" : "/mo_land/";
-
-        if (upperName.startsWith('V6-')) {
-            domain = "https://bike.w-rental.co.kr/rental/Rental_V6";
-            name = 'V6-' + name.split('-').slice(1).join('-');
-        } else if (upperName.startsWith('HX5P-')) {
-            domain = "https://bike.w-rental.co.kr/rental/Rental_HX5";
-            name = 'HX5P-' + name.split('-').slice(1).join('-');
-        } else if (upperName.startsWith('HLG-')) {
-            domain = "https://health.nordkin.co.kr/health/TM_HLG";
-            name = 'HLG-' + name.split('-').slice(1).join('-');
-        } else if (upperName.startsWith('PAPER-')) {
-            domain = "https://www.theweek.co.kr/edu/Rental_wcomms";
-            name = 'Paper-' + name.split('-').slice(1).join('-') + '-01';
-        } else {
-            domain = "https://www.viaggio.co.kr";
-        }
-
+        let name = pageName; let upperName = pageName.toUpperCase(); let domain = ""; let path = (deviceType === 'pc') ? "/on_land/" : "/mo_land/";
+        if (upperName.startsWith('V6-')) { domain = "https://bike.w-rental.co.kr/rental/Rental_V6"; name = 'V6-' + name.split('-').slice(1).join('-'); } 
+        else if (upperName.startsWith('HX5P-')) { domain = "https://bike.w-rental.co.kr/rental/Rental_HX5"; name = 'HX5P-' + name.split('-').slice(1).join('-'); } 
+        else if (upperName.startsWith('HLG-')) { domain = "https://health.nordkin.co.kr/health/TM_HLG"; name = 'HLG-' + name.split('-').slice(1).join('-'); } 
+        else if (upperName.startsWith('PAPER-')) { domain = "https://www.theweek.co.kr/edu/Rental_wcomms"; name = 'Paper-' + name.split('-').slice(1).join('-') + '-01'; } 
+        else { domain = "https://www.viaggio.co.kr"; }
         return `${domain}${path}${name}.html`;
     }
 
     function renderPagination(total) {
-        const pbox = document.getElementById('pagination'); pbox.innerHTML = '';
-        if(total <= 1) return;
+        const pbox = document.getElementById('pagination'); pbox.innerHTML = ''; if(total <= 1) return;
         for (let i = 1; i <= total; i++) {
-            const btn = document.createElement('button');
-            btn.className = `page-num ${i === currentPage ? 'active' : ''}`;
-            btn.innerText = i;
-            btn.onclick = () => { currentPage = i; applyFilters(); window.scrollTo(0, 0); };
-            pbox.appendChild(btn);
+            const btn = document.createElement('button'); btn.className = `page-num ${i === currentPage ? 'active' : ''}`; btn.innerText = i;
+            btn.onclick = () => { currentPage = i; applyFilters(); window.scrollTo(0, 0); }; pbox.appendChild(btn);
         }
     }
 
@@ -335,5 +332,3 @@
 </script>
 </body>
 </html>
-
-
