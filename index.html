@@ -21,12 +21,11 @@
             margin: 0 auto;
         }
 
-        /* 2. [수정] 최상단 고정 메뉴 바 - 가로 100% 및 로고 옆 메뉴 배치 */
+        /* 2. 최상단 고정 메뉴 바 - 가로 100% 레이아웃 */
         .top-nav {
             position: fixed;
             top: 0; left: 0; 
-            width: 100%; /* 가로 전체 100% 사용 */
-            height: 60px;
+            width: 100%; height: 60px;
             background-color: rgba(255, 255, 255, 0.95);
             border-bottom: 1px solid #f0f0f0;
             z-index: 1000;
@@ -34,13 +33,17 @@
         }
         .nav-content {
             width: 100%; 
-            padding: 0 40px; /* 양 끝 최소 여백만 유지 */
+            padding: 0 40px; 
             display: flex; 
             align-items: center; 
-            justify-content: flex-start; /* 메뉴를 로고 쪽으로 붙이기 위해 왼쪽 정렬 */
-            gap: 60px; /* 로고와 메뉴 그룹 사이의 간격 */
+            justify-content: flex-start; 
+            gap: 60px; 
         }
         .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; }
+        
+        /* [수정] 로고 이미지 크기를 다시 2/3 사이즈(32px)로 조정 */
+        .nav-logo img { height: 70px; width: auto; }
+
         .logo-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #ff8a00, #ff5c00, #9c27b0); border-radius: 4px; }
         .nav-links { display: flex; gap: 30px; }
         .nav-links a { font-size: 15px; font-weight: 500; transition: color 0.2s; }
@@ -56,7 +59,7 @@
         /* 4. Works 섹션 (자동 슬라이더 & 비율 720:824) */
         .works-section { padding: 100px 0; }
         .section-label { 
-            font-size: clamp(24px, 1.667vw, 32px); /* 1920 기준 32px */
+            font-size: clamp(24px, 1.667vw, 32px);
             font-weight: 600; margin-bottom: 60px; text-align: center; 
         }
         .works-slider-wrapper { position: relative; width: 100%; }
@@ -171,6 +174,7 @@
             .footer-info-section { text-align: left; }
         }
         @media (max-width: 768px) {
+            .nav-content { gap: 30px; }
             .works-grid { flex-direction: column; } .work-column { aspect-ratio: auto; }
             .banner-grid { column-count: 2; }
             .description-section { flex-direction: column; } .desc-meta { text-align: left; margin-top: 20px; }
@@ -182,8 +186,8 @@
 
     <nav class="top-nav">
         <div class="nav-content">
-            <a href="#" class="nav-logo">
-                    <img src="./images/logo.jpg">
+            <a href="index.html" class="nav-logo">
+                <img src="./images/logo.jpg">
             </a>
             <div class="nav-links">
                 <a href="landing.html">랜딩</a>
@@ -344,28 +348,5 @@
         const pSlider = document.getElementById('pageScroll');
         const pFill = document.getElementById('scrollFill');
         let isDown = false, startX, scrollLeft;
-        pSlider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - pSlider.offsetLeft; scrollLeft = pSlider.scrollLeft; });
-        pSlider.addEventListener('mouseleave', () => isDown = false);
-        pSlider.addEventListener('mouseup', () => isDown = false);
-        pSlider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - pSlider.offsetLeft; const walk = (x - startX) * 2; pSlider.scrollLeft = scrollLeft - walk; });
 
-        function scrollToNext(e) {
-            e.stopPropagation();
-            const itemWidth = 1062 + 24;
-            const maxScroll = pSlider.scrollWidth - pSlider.clientWidth;
-            if (pSlider.scrollLeft >= maxScroll - 10) {
-                pSlider.scrollTo({ left: 0, behavior: 'smooth' }); 
-            } else {
-                pSlider.scrollBy({ left: itemWidth, behavior: 'smooth' }); 
-            }
-        }
-
-        pSlider.addEventListener('scroll', () => {
-            const max = pSlider.scrollWidth - pSlider.clientWidth;
-            const pct = (pSlider.scrollLeft / max) * 80;
-            pFill.style.left = pct + '%';
-        });
-    </script>
-</body>
-</html>
-
+        pSlider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - pSlider.
