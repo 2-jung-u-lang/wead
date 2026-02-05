@@ -2,15 +2,16 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeaD Banner Archive v234</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary-orange: #f3946a; --text-black: #111; --text-gray: #999; --border-light: #eee; }
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
-        body { margin: 0; background: #fff; color: var(--text-black); overflow-x: hidden; padding-top: 60px; } /* 상단 메뉴 높이만큼 추가 */
+        body { margin: 0; background: #fff; color: var(--text-black); overflow-x: hidden; padding-top: 60px; }
 
-        /* --- [수정] 상단 메뉴: 가로 100% 및 로고 옆 메뉴 밀착 디자인 --- */
+        /* --- 상단 메뉴: 가로 100% 및 로고 옆 메뉴 밀착 디자인 --- */
         .top-nav {
             position: fixed;
             top: 0; left: 0; 
@@ -25,8 +26,8 @@
             padding: 0 40px; 
             display: flex; 
             align-items: center; 
-            justify-content: flex-start; /* 로고와 메뉴 왼쪽 정렬 */
-            gap: 60px; /* 로고와 메뉴 사이 간격 */
+            justify-content: flex-start;
+            gap: 60px;
         }
         .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; text-decoration: none; color: #1a1a1a; }
         .logo-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #ff8a00, #ff5c00, #9c27b0); border-radius: 4px; }
@@ -35,27 +36,44 @@
         .nav-links a.active { color: #1a1a1a; }
         .nav-links a.active::after { content: ''; position: absolute; bottom: -20px; left: 0; width: 100%; height: 3px; background-color: #1a1a1a; }
         .nav-links a:hover { color: var(--primary-orange); }
-        /* ----------------------------------------------------------- */
+
+        /* --- 메인 레이아웃: 가로 100% 꽉 채우기 --- */
+        .wrapper { 
+            display: flex; 
+            width: 100%;
+            margin: 0; 
+            padding: 0 40px; 
+            min-height: calc(100vh - 60px); 
+        }
+
+        .sidebar { 
+            width: 180px; 
+            padding: 60px 0; 
+            flex-shrink: 0; 
+            margin-right: 40px; 
+        }
+        .side-item { padding: 12px 20px; font-size: 14px; font-weight: 700; color: #666; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; }
+        .side-item.active { background: #f3f3f3; color: var(--text-black); }
+
+        .main-content { flex-grow: 1; padding: 60px 0; width: 100%; }
+        .main-title { font-size: 42px; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px; }
 
         .search-area { display: flex; justify-content: flex-end; margin-bottom: 20px; }
-        .search-container { position: relative; width: 320px; }
+        .search-container { position: relative; width: 100%; max-width: 320px; }
         .search-container input { width: 100%; padding: 12px 18px; padding-right: 45px; border: 1px solid #ddd; border-radius: 8px; background: #fdfdfd; font-size: 14px; outline: none; }
         .search-container i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
 
-        .wrapper { display: flex; max-width: 1400px; margin: 0 auto; min-height: calc(100vh - 70px); }
-        .sidebar { width: 151px; padding: 50px 0; flex-shrink: 0; margin-right: 48px; }
-        .side-item { padding: 12px 20px; font-size: 14px; font-weight: 700; color: #666; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
-        .side-item.active { background: #f3f3f3; color: var(--text-black); }
-
-        .main-content { flex-grow: 1; padding: 60px 0; }
-        .main-title { font-size: 42px; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; }
-
-        .brand-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
-        .brand-btn { padding: 8px 20px; border-radius: 20px; background: #f1f3f7; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border: none; transition: 0.2s; }
+        .brand-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+        .brand-btn { padding: 8px 16px; border-radius: 20px; background: #f1f3f7; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border: none; transition: 0.2s; }
         .brand-btn.active { background: var(--primary-orange) !important; color: #fff !important; }
 
-        .banner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .banner-grid.grid-5 { grid-template-columns: repeat(5, 1fr); gap: 15px; }
+        .banner-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px; 
+        }
+        .banner-grid.grid-5 { grid-template-columns: repeat(6, 1fr); gap: 15px; }
+
         .banner-item { border-radius: 12px; transition: 0.3s; cursor: pointer; position: relative; overflow: hidden; border: 1px solid var(--border-light); }
         .banner-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .img-box { width: 100%; border-radius: 12px; overflow: hidden; background: #f4f4f4; display: flex; align-items: center; justify-content: center; }
@@ -63,9 +81,31 @@
         
         .count-info { font-size: 14px; font-weight: 700; margin-bottom: 20px; color: #444; }
         .count-info b { color: var(--primary-orange); }
-        .pagination { display: flex; justify-content: center; margin-top: 50px; gap: 8px; }
+
+        .pagination { display: flex; justify-content: center; margin-top: 50px; gap: 8px; flex-wrap: wrap; }
         .page-dot { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #eee; background: #fff; cursor: pointer; font-weight: 700; color: #999; }
         .page-dot.active { background: var(--primary-orange); color: #fff; border-color: var(--primary-orange); }
+
+        /* 반응형 구간 */
+        @media (max-width: 1400px) {
+            .banner-grid { grid-template-columns: repeat(3, 1fr); }
+            .banner-grid.grid-5 { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (max-width: 1024px) {
+            .banner-grid { grid-template-columns: repeat(2, 1fr); }
+            .banner-grid.grid-5 { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .wrapper { flex-direction: column; padding: 0 20px; }
+            .sidebar { width: 100%; padding: 20px 0; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+            .sidebar::-webkit-scrollbar { display: none; }
+            .side-item { margin-bottom: 0; white-space: nowrap; flex-shrink: 0; }
+            .main-title { display: none; }
+            .main-content { padding: 10px 0 60px; }
+            .banner-grid { grid-template-columns: 1fr; }
+            .banner-grid.grid-5 { grid-template-columns: repeat(2, 1fr); }
+            .nav-content { padding: 0 20px; gap: 30px; }
+        }
     </style>
 </head>
 <body>
@@ -85,10 +125,11 @@
 
 <div class="wrapper">
     <div class="sidebar">
-        <div class="main-title" style="margin-top:50px;">Banner</div>
+        <div class="main-title">Banner</div>
         <div class="side-item active" onclick="changeCategory('타임보드', this)">타임보드</div>
         <div class="side-item" onclick="changeCategory('페이스북', this)">페이스북</div>
     </div>
+
     <div class="main-content">
         <div class="search-area">
             <div class="search-container">
@@ -105,7 +146,7 @@
 </div>
 
 <script>
-    /* 아래 스크립트 로직은 원본 코딩을 절대 건드리지 않았습니다. */
+    /* 스크립트 로직 유지 */
     const SUPABASE_URL = 'https://pfuwdbgnxkxcchjlwauc.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_GTnHAd2Q2wtlLjynoct2UA_r5RDvSPU';
     const BUCKET = 'banner';
@@ -174,12 +215,23 @@
 
     function startRolling(el, urls) { if (urls.length <= 1) return; let i = 0; const img = el.querySelector('img'); clearInterval(rollIntervals[el.dataset.id]); rollIntervals[el.dataset.id] = setInterval(() => { i = (i + 1) % urls.length; img.src = urls[i]; }, 800); }
     function stopRolling(el, firstUrl) { clearInterval(rollIntervals[el.dataset.id]); el.querySelector('img').src = firstUrl; }
-    function changeCategory(cat, el) { document.querySelectorAll('.side-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); currentCategory = cat; currentBrand = '전체'; currentPage = 1; document.getElementById('bannerGrid').className = (cat.includes('페이스북')) ? 'banner-grid grid-5' : 'banner-grid'; itemsPerPage = (cat.includes('페이스북')) ? 30 : 30; search(); loadBrands(); }
+    function changeCategory(cat, el) { 
+        document.querySelectorAll('.side-item').forEach(i => i.classList.remove('active')); 
+        el.classList.add('active'); 
+        currentCategory = cat; 
+        currentBrand = '전체'; 
+        currentPage = 1; 
+        document.getElementById('bannerGrid').className = (cat.includes('페이스북')) ? 'banner-grid grid-5' : 'banner-grid'; 
+        search(); 
+        loadBrands(); 
+    }
     async function loadBrands() { const { data } = await supabaseClient.from('banner').select('brand').eq('category', currentCategory.trim()); const brands = ['전체', ...new Set(data?.map(d => d.brand.normalize('NFC')) || [])]; document.getElementById('brandPills').innerHTML = brands.map(b => `<button class="brand-btn ${currentBrand === b ? 'active' : ''}" onclick="currentBrand='${b}'; currentPage=1; search(); loadBrands();">${b}</button>`).join(''); }
     function renderPagination(total) { const totalPages = Math.ceil(total / itemsPerPage); if(total <= itemsPerPage) { document.getElementById('pagination').innerHTML = ''; return; } let html = ''; for (let i = 1; i <= totalPages; i++) html += `<div class="page-dot ${i === currentPage ? 'active' : ''}" onclick="currentPage=${i}; search(); window.scrollTo(0,0);">${i}</div>`; document.getElementById('pagination').innerHTML = html; }
 
-    init();
-    changeCategory('타임보드', document.querySelector('.side-item.active'));
+    /* --- [수정] 초기 로딩 시 undefined 함수 호출인 init()을 제거하고 바로 changeCategory 실행 --- */
+    window.onload = function() {
+        changeCategory('타임보드', document.querySelector('.side-item.active'));
+    };
 </script>
 </body>
 </html>
