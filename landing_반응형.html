@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
+<html lang="ko"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeaD Archive - User Portal v61.0</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* [기존 스타일 유지] */
         :root { --main-orange: #FFA364; --text-black: #111; --text-grey: #666; --border-light: #eee; --bg-light: #f8f8f8; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
         body { background-color: #ffffff; color: var(--text-black); overflow-x: hidden; }
@@ -27,7 +25,7 @@
         @media (min-width: 768px) { .header-main { flex-direction: row; justify-content: space-between; align-items: center; } }
         .header-main h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
         .search-container { position: relative; width: 100%; max-width: 450px; }
-        .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; }
+        .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; font-size: 14px; }
         .search-container i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; }
         .tab-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
         .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; text-transform: uppercase; }
@@ -40,10 +38,14 @@
         @media (min-width: 950px) { .landing-grid { grid-template-columns: repeat(2, 430px); } }
         @media (min-width: 1420px) { .landing-grid { grid-template-columns: repeat(3, 430px); } }
         @media (min-width: 1880px) { .landing-grid { grid-template-columns: repeat(4, 430px); } }
+        @media (min-width: 2400px) { .landing-grid { grid-template-columns: repeat(5, 430px); } }
+        
         .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
         .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; }
+        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; z-index: 5; }
         .card:hover .card-overlay { opacity: 1; }
+        .ov-title { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+        .ov-meta { font-size: 11px; color: rgba(255,255,255,0.7); }
         #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 0; }
         .modal-wrap { background: #fff; width: 100%; height: 100vh; display: flex; }
         .modal-container { background: #fff; margin: 0 auto; width: 1188px; height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; }
@@ -77,27 +79,24 @@
 <div class="site-wrapper">
     <header>
         <div class="inner-container">
+
             <div class="logo"><div class="logo-icon"></div>WeaD <span>Archive</span></div>
             <nav class="gnb-menu"><a href="#" class="active">랜딩페이지</a><a href="#">배너</a></nav>
         </div>
     </header>
 
     <div class="inner-container">
-
         <div class="header-main">
             <h1>Archive</h1>
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="페이지, 기획/디자이너, 시안 내 문구 검색" onkeyup="handleSearch()">
+                <input type="text" id="searchInput" placeholder="페이지, 기획자, 디자이너 검색" onkeyup="handleSearch()">
                 <i class="fas fa-search"></i>
             </div>
         </div>
-
         <div class="filter-section">
-            <div class="tab-container" id="tabContainer">
-                </div>
+            <div class="tab-container" id="tabContainer"></div>
             <div class="count-info">결과: <b id="totalCount">0개</b></div>
         </div>
-
         <div id="grid" class="landing-grid"></div>
         <div id="pagination" class="pagination"></div>
     </div>
@@ -141,48 +140,78 @@
 
     let allItems = [], currentTab = 'all', currentPage = 1, itemsPerPage = 20, currentModalData = null;
 
+    // 브랜드 영문-한글 매핑표
+    const brandKoMap = {
+        'viaggio': '비아지오',
+        'nordkin': '노르드킨',
+        'theweek': '더위크',
+        'paper': '더위크',
+        'japer': '더위크 일본어',
+        'v6': 'V6',
+        'hx5': 'HX5',
+        'hlg': 'HLG'
+    };
+
     async function init() {
         const { data } = await supabaseClient.from('wead').select('*');
         if (data) {
             const pattern = /^[a-zA-Z0-9]+-\d+-\d+$/;
             allItems = data.filter(i => pattern.test(i.page_name));
-            
-            // 1. 브랜드 목록을 동적으로 추출하여 탭 버튼 생성
             renderBrandTabs();
             applyFilters();
         }
     }
 
-    // [수정] 브랜드 데이터를 기반으로 탭 버튼 자동 생성
     function renderBrandTabs() {
         const container = document.getElementById('tabContainer');
-        const brands = [...new Set(allItems.map(i => i.brand))].filter(Boolean).sort();
+        const brands = [...new Set(allItems.map(i => i.brand ? i.brand.trim() : null))].filter(Boolean);
         
+        const getKoName = (name) => brandKoMap[name.toLowerCase()] || name.toUpperCase();
+
+        brands.sort((a, b) => {
+            const aKo = getKoName(a);
+            const bKo = getKoName(b);
+            const aIsWeek = aKo.includes('더위크');
+            const bIsWeek = bKo.includes('더위크');
+            
+            if (aIsWeek && !bIsWeek) return -1;
+            if (!aIsWeek && bIsWeek) return 1;
+            return aKo.localeCompare(bKo);
+        });
+
         let tabHtml = `<button class="tab-btn active" onclick="filterByTab('all', this)">전체</button>`;
         brands.forEach(brand => {
-            tabHtml += `<button class="tab-btn" onclick="filterByTab('${brand}', this)">${brand}</button>`;
+            tabHtml += `<button class="tab-btn" onclick="filterByTab('${brand}', this)">${getKoName(brand)}</button>`;
         });
         container.innerHTML = tabHtml;
     }
 
-    // [수정] 검색 로직 강화: content_text, designer, planner 포함
     function applyFilters() {
         let filtered = allItems;
         if (currentTab !== 'all') filtered = filtered.filter(i => i.brand === currentTab);
-        
         const query = document.getElementById('searchInput').value.toLowerCase();
         if (query) {
             filtered = filtered.filter(i => 
                 i.page_name.toLowerCase().includes(query) ||
-                (i.content_text && i.content_text.toLowerCase().includes(query)) || // 시안 내 문구 검색
-                (i.designer && i.designer.toLowerCase().includes(query)) ||       // 디자이너 검색
-                (i.planner && i.planner.toLowerCase().includes(query))            // 기획자 검색
+                (i.designer && i.designer.toLowerCase().includes(query)) ||
+                (i.planner && i.planner.toLowerCase().includes(query))
             );
         }
-        
-        filtered.sort((a, b) => b.page_name.localeCompare(a.page_name, undefined, {numeric: true}));
+
+        // [수정된 부분] 전체 보기일 때 '더위크' 시리즈 우선 정렬
+        filtered.sort((a, b) => {
+            const theWeekBrands = ['theweek', 'paper', 'japer'];
+            const aIsWeek = theWeekBrands.includes(a.brand?.toLowerCase().trim());
+            const bIsWeek = theWeekBrands.includes(b.brand?.toLowerCase().trim());
+
+            if (aIsWeek && !bIsWeek) return -1;
+            if (!aIsWeek && bIsWeek) return 1;
+
+            // 같은 그룹 내에서는 page_name 내림차순 정렬
+            return b.page_name.localeCompare(a.page_name, undefined, {numeric: true});
+        });
+
         const unique = Array.from(new Map(filtered.map(i => [i.page_name, i])).values());
-        
         document.getElementById('totalCount').innerText = `${unique.length}개`;
         const totalPages = Math.ceil(unique.length / itemsPerPage);
         renderGrid(unique.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
@@ -193,30 +222,40 @@
         const grid = document.getElementById('grid');
         grid.innerHTML = data.map(f => {
             const root = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${f.brand}/${f.page_name}`;
-            return `
-                <div class="card" onclick="openModal('${f.page_name}')">
-                    <div class="card-thumb">
-                        <img src="${root}/pc/thum.jpg" 
-                             onerror="this.onerror=function(){this.onerror=function(){this.src='https://via.placeholder.com/430x232?text=No+Image'};this.src='${root}/mo/01.jpg'};this.src='${root}/pc/01.jpg';">
-                        <div class="card-overlay">
-                            <div><div class="ov-title">${f.page_name.toUpperCase()}</div><div class="ov-meta">${f.planner || '-'} / ${f.designer || '-'}</div></div>
-                        </div>
-                    </div>
-                </div>`;
+            return `<div class="card" onclick="openModal('${f.page_name}')"><div class="card-thumb"><img src="${root}/pc/thum.jpg" onerror="this.onerror=function(){this.onerror=function(){this.src='https://via.placeholder.com/430x232?text=No+Image'};this.src='${root}/mo/01.jpg'};this.src='${root}/pc/01.jpg';"><div class="card-overlay"><div><div class="ov-title">${f.page_name.toUpperCase()}</div><div class="ov-meta">${f.planner || '-'} / ${f.designer || '-'}</div></div></div></div></div>`;
         }).join('');
     }
 
-    // 모달 및 디바이스 스위칭 로직 (기존 유지)
     function openModal(pageName) {
         const pcData = allItems.find(i => i.page_name === pageName && i.type === 'pc');
         const moData = allItems.find(i => i.page_name === pageName && i.type === 'mo');
         currentModalData = { pageName, pcData, moData };
         const base = pcData || moData;
-        document.getElementById('mdBrand').innerText = base.brand.toUpperCase();
-        document.getElementById('mdTitle').innerText = pageName.toUpperCase();
+        
+        // 브랜드명 한글 변환 표시
+        const displayName = brandKoMap[base.brand.toLowerCase().trim()] || base.brand.toUpperCase();
+        document.getElementById('mdBrand').innerText = displayName;
+        
+        document.getElementById('mdTitle').innerText = pageName;
         document.getElementById('mdPlanner').innerText = base.planner || '-';
         document.getElementById('mdDesigner').innerText = base.designer || '-';
-        document.getElementById('mdFigmaBtn').href = `https://www.figma.com/file/${base.file_key}/?node-id=${base.id}`;
+        
+        // 피그마 버튼 처리
+        const figmaBtn = document.getElementById('mdFigmaBtn');
+        const figmaKey = base.file_key?.trim();
+        if(figmaKey && figmaKey !== '-' && figmaKey !== '') {
+            figmaBtn.href = `https://www.figma.com/file/${figmaKey}/?node-id=${base.id}`;
+            figmaBtn.style.display = 'flex';
+        } else {
+            figmaBtn.style.display = 'none';
+        }
+
+        // PC/모바일 버튼 데이터 존재 여부에 따른 노출 제어
+        const btnPC = document.getElementById('btnPC');
+        const btnMO = document.getElementById('btnMO');
+        btnPC.style.display = pcData ? 'block' : 'none';
+        btnMO.style.display = moData ? 'block' : 'none';
+
         document.getElementById('modalOverlay').style.display = 'flex';
         switchDevice(pcData ? 'pc' : 'mo');
         document.body.style.overflow = 'hidden';
@@ -235,18 +274,42 @@
         }
         document.getElementById('btnPC').classList.toggle('active', type === 'pc');
         document.getElementById('btnMO').classList.toggle('active', type === 'mo');
-        document.getElementById('mdLiveBtn').href = getLiveUrl(currentModalData.pageName, type);
+        
+        const liveUrl = getLiveUrl(currentModalData.pageName, type);
+        const liveBtn = document.getElementById('mdLiveBtn');
+        if(liveUrl) {
+            liveBtn.href = liveUrl;
+            liveBtn.style.display = 'flex';
+        } else {
+            liveBtn.style.display = 'none';
+        }
+        
         document.getElementById('modalImgScroll').scrollTop = 0;
     }
 
     function getLiveUrl(pageName, deviceType) {
-        let name = pageName.toUpperCase();
-        let domain = "https://www.viaggio.co.kr";
+        let name = pageName; 
+        let upperName = pageName.toUpperCase();
+        let domain = "";
         let path = (deviceType === 'pc') ? "/on_land/" : "/mo_land/";
-        if (name.startsWith('V6-')) domain = "https://bike.w-rental.co.kr/rental/Rental_V6";
-        else if (name.startsWith('HX5P-')) domain = "https://bike.w-rental.co.kr/rental/Rental_HX5";
-        else if (name.startsWith('HLG-')) domain = "https://health.nordkin.co.kr/health/TM_HLG";
-        return `${domain}${path}${name}.html`;
+
+        if (upperName.startsWith('V6-')) {
+            domain = "https://bike.w-rental.co.kr/rental/Rental_V6";
+            name = 'V6-' + name.split('-').slice(1).join('-');
+        } else if (upperName.startsWith('HX5P-')) {
+            domain = "https://bike.w-rental.co.kr/rental/Rental_HX5";
+            name = 'HX5P-' + name.split('-').slice(1).join('-');
+        } else if (upperName.startsWith('HLG-')) {
+            domain = "https://health.nordkin.co.kr/health/TM_HLG";
+            name = 'HLG-' + name.split('-').slice(1).join('-');
+        } else if (upperName.startsWith('PAPER-')) {
+            domain = "https://www.theweek.co.kr/edu/Rental_wcomms";
+            let coreName = name.split('-').slice(1).join('-');
+            name = 'Paper-' + coreName + (coreName.endsWith('01') ? '' : '-01');
+        } else {
+            domain = "https://www.viaggio.co.kr";
+        }
+        return domain ? `${domain}${path}${name}.html` : null;
     }
 
     function renderPagination(total) {
