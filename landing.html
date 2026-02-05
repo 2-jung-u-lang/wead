@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko"><head>
+<html lang="ko">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeaD Archive - User Portal v61.0</title>
@@ -8,19 +9,38 @@
     <style>
         :root { --main-orange: #FFA364; --text-black: #111; --text-grey: #666; --border-light: #eee; --bg-light: #f8f8f8; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
-        body { background-color: #ffffff; color: var(--text-black); overflow-x: hidden; }
+        body { background-color: #ffffff; color: var(--text-black); overflow-x: hidden; padding-top: 60px; }
         .site-wrapper { max-width: 100%; margin: 0 auto; background-color: #fff; min-height: 100vh; position: relative; }
         .inner-container { max-width: 100%; margin: 0 auto; padding: 0 20px; }
         @media (min-width: 768px) { .inner-container { padding: 0 50px; } }
-        header { height: 70px; border-bottom: 1px solid var(--border-light); background: #fff; position: sticky; top: 0; z-index: 1000; }
-        header .inner-container { display: flex; align-items: center; justify-content: space-between; height: 100%; }
-        .logo { display: flex; align-items: center; font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
-        .logo-icon { width: 22px; height: 22px; background: linear-gradient(135deg, #f3946a, #8e44ad); margin-right: 8px; border-radius: 4px; }
-        .logo span { color: var(--main-orange); }
-        .gnb-menu { display: flex; gap: 30px; }
-        .gnb-menu a { text-decoration: none; color: var(--text-grey); font-size: 16px; font-weight: 700; height: 70px; display: flex; align-items: center; position: relative; }
-        .gnb-menu a.active { color: var(--text-black); }
-        .gnb-menu a.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background-color: var(--text-black); }
+
+        /* --- [수정] 상단 메뉴: 가로 100% 및 로고 옆 메뉴 밀착 디자인 --- */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; 
+            width: 100%; height: 60px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #f0f0f0;
+            z-index: 1000;
+            display: flex; align-items: center;
+        }
+        .nav-content {
+            width: 100%; 
+            padding: 0 40px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; /* 로고와 메뉴 왼쪽 정렬 */
+            gap: 60px; /* 로고와 메뉴 사이 간격 */
+        }
+        .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; text-decoration: none; color: #1a1a1a; }
+        .logo-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #ff8a00, #ff5c00, #9c27b0); border-radius: 4px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { text-decoration: none; color: var(--text-grey); font-size: 15px; font-weight: 700; transition: color 0.2s; position: relative; }
+        .nav-links a.active { color: #1a1a1a; }
+        .nav-links a.active::after { content: ''; position: absolute; bottom: -20px; left: 0; width: 100%; height: 3px; background-color: #1a1a1a; }
+        .nav-links a:hover { color: #ff5c00; }
+        /* ----------------------------------------------------------- */
+
         .header-main { padding: 50px 0 20px; display: flex; flex-direction: column; gap: 20px; }
         @media (min-width: 768px) { .header-main { flex-direction: row; justify-content: space-between; align-items: center; } }
         .header-main h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
@@ -77,13 +97,18 @@
 <body>
 
 <div class="site-wrapper">
-    <header>
-        <div class="inner-container">
-
-            <div class="logo"><div class="logo-icon"></div>WeaD <span>Archive</span></div>
-            <nav class="gnb-menu"><a href="#" class="active">랜딩페이지</a><a href="#">배너</a></nav>
+    <nav class="top-nav">
+        <div class="nav-content">
+            <a href="#" class="nav-logo">
+                <div class="logo-icon"></div>
+                WeaD Archive
+            </a>
+            <div class="nav-links">
+                <a href="#" class="active">랜딩페이지</a>
+                <a href="#">배너</a>
+            </div>
         </div>
-    </header>
+    </nav>
 
     <div class="inner-container">
         <div class="header-main">
@@ -140,7 +165,7 @@
 
     let allItems = [], currentTab = 'all', currentPage = 1, itemsPerPage = 20, currentModalData = null;
 
-    // 브랜드 영문-한글 매핑표
+    // [추가] 브랜드 영문-한글 매핑표
     const brandKoMap = {
         'viaggio': '비아지오',
         'nordkin': '노르드킨',
@@ -152,9 +177,16 @@
         'hlg': 'HLG'
     };
 
+    // [추가] 한글 이름을 가져오는 도우미 함수
+    const getKoName = (name) => {
+        if(!name) return '';
+        return brandKoMap[name.toLowerCase().trim()] || name.toUpperCase();
+    };
+
     async function init() {
         const { data } = await supabaseClient.from('wead').select('*');
         if (data) {
+
             const pattern = /^[a-zA-Z0-9]+-\d+-\d+$/;
             allItems = data.filter(i => pattern.test(i.page_name));
             renderBrandTabs();
@@ -164,23 +196,10 @@
 
     function renderBrandTabs() {
         const container = document.getElementById('tabContainer');
-        const brands = [...new Set(allItems.map(i => i.brand ? i.brand.trim() : null))].filter(Boolean);
-        
-        const getKoName = (name) => brandKoMap[name.toLowerCase()] || name.toUpperCase();
-
-        brands.sort((a, b) => {
-            const aKo = getKoName(a);
-            const bKo = getKoName(b);
-            const aIsWeek = aKo.includes('더위크');
-            const bIsWeek = bKo.includes('더위크');
-            
-            if (aIsWeek && !bIsWeek) return -1;
-            if (!aIsWeek && bIsWeek) return 1;
-            return aKo.localeCompare(bKo);
-        });
-
+        const brands = [...new Set(allItems.map(i => i.brand))].filter(Boolean).sort();
         let tabHtml = `<button class="tab-btn active" onclick="filterByTab('all', this)">전체</button>`;
         brands.forEach(brand => {
+            // [수정] 버튼 텍스트에 한글 이름 적용
             tabHtml += `<button class="tab-btn" onclick="filterByTab('${brand}', this)">${getKoName(brand)}</button>`;
         });
         container.innerHTML = tabHtml;
@@ -193,21 +212,17 @@
         if (query) {
             filtered = filtered.filter(i => 
                 i.page_name.toLowerCase().includes(query) ||
+                (i.content_text && i.content_text.toLowerCase().includes(query)) ||
                 (i.designer && i.designer.toLowerCase().includes(query)) ||
                 (i.planner && i.planner.toLowerCase().includes(query))
             );
         }
 
-        // [수정된 부분] 전체 보기일 때 '더위크' 시리즈 우선 정렬
         filtered.sort((a, b) => {
-            const theWeekBrands = ['theweek', 'paper', 'japer'];
-            const aIsWeek = theWeekBrands.includes(a.brand?.toLowerCase().trim());
-            const bIsWeek = theWeekBrands.includes(b.brand?.toLowerCase().trim());
-
-            if (aIsWeek && !bIsWeek) return -1;
-            if (!aIsWeek && bIsWeek) return 1;
-
-            // 같은 그룹 내에서는 page_name 내림차순 정렬
+            const isATheWeek = a.brand && a.brand.toLowerCase().trim() === 'theweek';
+            const isBTheWeek = b.brand && b.brand.toLowerCase().trim() === 'theweek';
+            if (isATheWeek && !isBTheWeek) return -1;
+            if (!isATheWeek && isBTheWeek) return 1;
             return b.page_name.localeCompare(a.page_name, undefined, {numeric: true});
         });
 
@@ -232,29 +247,19 @@
         currentModalData = { pageName, pcData, moData };
         const base = pcData || moData;
         
-        // 브랜드명 한글 변환 표시
-        const displayName = brandKoMap[base.brand.toLowerCase().trim()] || base.brand.toUpperCase();
-        document.getElementById('mdBrand').innerText = displayName;
-        
+        // [수정] 모달 브랜드 텍스트에 한글 이름 적용
+        document.getElementById('mdBrand').innerText = getKoName(base.brand);
         document.getElementById('mdTitle').innerText = pageName;
         document.getElementById('mdPlanner').innerText = base.planner || '-';
         document.getElementById('mdDesigner').innerText = base.designer || '-';
         
-        // 피그마 버튼 처리
         const figmaBtn = document.getElementById('mdFigmaBtn');
-        const figmaKey = base.file_key?.trim();
-        if(figmaKey && figmaKey !== '-' && figmaKey !== '') {
-            figmaBtn.href = `https://www.figma.com/file/${figmaKey}/?node-id=${base.id}`;
+        if(base.file_key && base.file_key !== '-' && base.file_key !== '') {
+            figmaBtn.href = `https://www.figma.com/file/${base.file_key}/?node-id=${base.id}`;
             figmaBtn.style.display = 'flex';
         } else {
             figmaBtn.style.display = 'none';
         }
-
-        // PC/모바일 버튼 데이터 존재 여부에 따른 노출 제어
-        const btnPC = document.getElementById('btnPC');
-        const btnMO = document.getElementById('btnMO');
-        btnPC.style.display = pcData ? 'block' : 'none';
-        btnMO.style.display = moData ? 'block' : 'none';
 
         document.getElementById('modalOverlay').style.display = 'flex';
         switchDevice(pcData ? 'pc' : 'mo');
@@ -283,7 +288,6 @@
         } else {
             liveBtn.style.display = 'none';
         }
-        
         document.getElementById('modalImgScroll').scrollTop = 0;
     }
 
@@ -304,12 +308,12 @@
             name = 'HLG-' + name.split('-').slice(1).join('-');
         } else if (upperName.startsWith('PAPER-')) {
             domain = "https://www.theweek.co.kr/edu/Rental_wcomms";
-            let coreName = name.split('-').slice(1).join('-');
-            name = 'Paper-' + coreName + (coreName.endsWith('01') ? '' : '-01');
+            name = 'Paper-' + name.split('-').slice(1).join('-') + '-01';
         } else {
             domain = "https://www.viaggio.co.kr";
         }
-        return domain ? `${domain}${path}${name}.html` : null;
+
+        return `${domain}${path}${name}.html`;
     }
 
     function renderPagination(total) {
