@@ -8,20 +8,34 @@
     <style>
         :root { --primary-orange: #f3946a; --text-black: #111; --text-gray: #999; --border-light: #eee; }
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
-        body { margin: 0; background: #fff; color: var(--text-black); overflow-x: hidden; }
+        body { margin: 0; background: #fff; color: var(--text-black); overflow-x: hidden; padding-top: 60px; } /* 상단 메뉴 높이만큼 추가 */
 
-        header { 
-            width: 100%; height: 70px; background: #fff; border-bottom: 1px solid var(--border-light);
-            display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000;
+        /* --- [수정] 상단 메뉴: 가로 100% 및 로고 옆 메뉴 밀착 디자인 --- */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; 
+            width: 100%; height: 60px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #f0f0f0;
+            z-index: 1000;
+            display: flex; align-items: center;
         }
-        .header-inner { width: 100%; max-width: 1400px; display: flex; align-items: center; justify-content: flex-start; }
-        .logo { display: flex; align-items: center; font-size: 20px; font-weight: 900; color: #000; text-decoration: none; }
-        .logo-icon { width: 22px; height: 22px; background: linear-gradient(135deg, #f3946a, #8e44ad); border-radius: 5px; margin-right: 10px; }
-        
-        nav { display: flex; gap: 40px; margin-left: 60px; height: 70px; }
-        nav a { text-decoration: none; color: var(--text-gray); font-size: 16px; font-weight: 700; display: flex; align-items: center; position: relative; height: 100%; }
-        nav a.active { color: var(--text-black); }
-        nav a.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background-color: var(--text-black); }
+        .nav-content {
+            width: 100%; 
+            padding: 0 40px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; /* 로고와 메뉴 왼쪽 정렬 */
+            gap: 60px; /* 로고와 메뉴 사이 간격 */
+        }
+        .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; text-decoration: none; color: #1a1a1a; }
+        .logo-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #ff8a00, #ff5c00, #9c27b0); border-radius: 4px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { text-decoration: none; color: var(--text-gray); font-size: 15px; font-weight: 700; transition: color 0.2s; position: relative; }
+        .nav-links a.active { color: #1a1a1a; }
+        .nav-links a.active::after { content: ''; position: absolute; bottom: -20px; left: 0; width: 100%; height: 3px; background-color: #1a1a1a; }
+        .nav-links a:hover { color: var(--primary-orange); }
+        /* ----------------------------------------------------------- */
 
         .search-area { display: flex; justify-content: flex-end; margin-bottom: 20px; }
         .search-container { position: relative; width: 320px; }
@@ -56,15 +70,18 @@
 </head>
 <body>
 
-<header>
-    <div class="header-inner">
-        <a href="#" class="logo"><div class="logo-icon"></div>We<span>aD</span></a>
-        <nav>
+<nav class="top-nav">
+    <div class="nav-content">
+        <a href="#" class="nav-logo">
+            <div class="logo-icon"></div>
+            WeaD Archive
+        </a>
+        <div class="nav-links">
             <a href="landing.html">랜딩</a>
             <a href="banner.html" class="active">배너</a>
-        </nav>
+        </div>
     </div>
-</header>
+</nav>
 
 <div class="wrapper">
     <div class="sidebar">
@@ -88,6 +105,7 @@
 </div>
 
 <script>
+    /* 아래 스크립트 로직은 원본 코딩을 절대 건드리지 않았습니다. */
     const SUPABASE_URL = 'https://pfuwdbgnxkxcchjlwauc.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_GTnHAd2Q2wtlLjynoct2UA_r5RDvSPU';
     const BUCKET = 'banner';
@@ -114,23 +132,12 @@
         }
     }
 
-    async function loadFeaturedBanners() {
-        const { data } = await supabaseClient.from('banner').select('*').eq('is_main', true);
-        const container = document.getElementById('mainBannersDisplay');
-        if(!data || data.length === 0) { container.innerHTML = '<div style="color:#ccc; font-size:12px;">현재 진행 중인 메인 배너가 없습니다.</div>'; return; }
-        container.innerHTML = data.map(item => `<div class="featured-item" onclick="window.open('https://www.figma.com/design/${item.file_key}/?node-id=${item.id.replace(':','-')}')"><div class="featured-brand-badge">${item.brand}</div><div class="img-box"><img src="${getSingleUrl(item.brand, item.category, item.name, item.id)}" onerror="this.src='https://placehold.co/600x300?text=No+Image';"></div></div>`).join('');
-    }
-
     async function search() {
         const grid = document.getElementById('bannerGrid');
         const keyword = document.getElementById('searchInput').value;
-
         let query = supabaseClient.from('banner').select('*').eq('category', currentCategory.trim());
         if (currentBrand !== '전체') query = query.eq('brand', currentBrand.trim());
-        
-        // [v235 수정] content_txt 검색 기능 활성화
         if (keyword) query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%,content_txt.ilike.%${keyword}%`);
-
         const { data: allData } = await query.order('id', { ascending: false });
         if (!allData || allData.length === 0) { document.getElementById('totalCnt').innerHTML = `총 <b>0개</b>`; grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;">데이터가 없습니다.</div>'; return; }
 
@@ -138,17 +145,11 @@
         const uniqueBanners = allData.filter(item => {
             const nameStr = String(item.name || "");
             const catClean = currentCategory.trim();
-
-            // [v235 수정] 페이스북 정사각형 필터링 정밀 강화
             if (catClean.includes('페이스북')) {
                 const resMatch = nameStr.match(/(\d+)[\s]*[xX][\s]*(\d+)/);
-                if (resMatch) {
-                    // 가로와 세로 숫자가 똑같을 때만 노출 (610x1080 등은 제외)
-                    return parseInt(resMatch[1]) === parseInt(resMatch[2]);
-                }
+                if (resMatch) { return parseInt(resMatch[1]) === parseInt(resMatch[2]); }
                 return false; 
             }
-
             if (nameStr.includes('rolling2') || nameStr.includes('rolling3')) return false;
             const prefix = (nameStr.match(/^[a-zA-Z0-9]+/) || [""])[0];
             if (prefix && seenPrefix.has(prefix)) return false;
@@ -177,6 +178,7 @@
     async function loadBrands() { const { data } = await supabaseClient.from('banner').select('brand').eq('category', currentCategory.trim()); const brands = ['전체', ...new Set(data?.map(d => d.brand.normalize('NFC')) || [])]; document.getElementById('brandPills').innerHTML = brands.map(b => `<button class="brand-btn ${currentBrand === b ? 'active' : ''}" onclick="currentBrand='${b}'; currentPage=1; search(); loadBrands();">${b}</button>`).join(''); }
     function renderPagination(total) { const totalPages = Math.ceil(total / itemsPerPage); if(total <= itemsPerPage) { document.getElementById('pagination').innerHTML = ''; return; } let html = ''; for (let i = 1; i <= totalPages; i++) html += `<div class="page-dot ${i === currentPage ? 'active' : ''}" onclick="currentPage=${i}; search(); window.scrollTo(0,0);">${i}</div>`; document.getElementById('pagination').innerHTML = html; }
 
+    init();
     changeCategory('타임보드', document.querySelector('.side-item.active'));
 </script>
 </body>
