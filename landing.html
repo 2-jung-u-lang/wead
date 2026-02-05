@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeaD Archive - User Portal v61.0</title>
+    <title>WeaD Banner Archive v234</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main-orange: #FFA364; --text-black: #111; --text-grey: #666; --border-light: #eee; --bg-light: #f8f8f8; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
-        body { background-color: #ffffff; color: var(--text-black); overflow-x: hidden; padding-top: 60px; }
-        
-        .site-wrapper { width: 100%; margin: 0 auto; background-color: #fff; min-height: 100vh; position: relative; }
-        
-        /* [수정] 컨테이너 가로 100% 및 여백 설정 */
-        .inner-container { width: 100%; margin: 0 auto; padding: 0 40px; }
+        :root { --primary-orange: #f3946a; --text-black: #111; --text-gray: #999; --border-light: #eee; }
+        * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+        body { margin: 0; background: #fff; color: var(--text-black); overflow-x: hidden; padding-top: 60px; }
 
         /* --- 상단 메뉴: 가로 100% 및 로고 옆 메뉴 밀착 디자인 --- */
         .top-nav {
@@ -34,301 +29,209 @@
             justify-content: flex-start;
             gap: 60px;
         }
+        /* [수정] 로고 이미지 스타일: 2/3 사이즈(32px) 적용 */
         .nav-logo { display: flex; align-items: center; text-decoration: none; }
         .nav-logo img { height: 73px; width: auto; display: block; }
-        
+
         .nav-links { display: flex; gap: 30px; }
-        .nav-links a { text-decoration: none; color: var(--text-grey); font-size: 15px; font-weight: 700; transition: color 0.2s; position: relative; }
+        .nav-links a { text-decoration: none; color: var(--text-gray); font-size: 15px; font-weight: 700; transition: color 0.2s; position: relative; }
         .nav-links a.active { color: #1a1a1a; }
         .nav-links a.active::after { content: ''; position: absolute; bottom: -20px; left: 0; width: 100%; height: 3px; background-color: #1a1a1a; }
-        .nav-links a:hover { color: #ff5c00; }
+        .nav-links a:hover { color: var(--primary-orange); }
 
-        /* --- 메인 헤더 영역 --- */
-        .header-main { padding: 50px 0 20px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 20px; }
-        .header-main h1 { font-size: clamp(28px, 3vw, 42px); font-weight: 800; letter-spacing: -1px; }
-        
-        .search-container { position: relative; width: 100%; max-width: 450px; }
-        .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; font-size: 14px; transition: 0.2s; }
-        .search-container input:focus { border-color: var(--main-orange); background-color: #fff; }
-        .search-container i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; }
-
-        /* --- 브랜드 필터 탭 --- */
-        .tab-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .tab-btn.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
-        .count-info { font-size: 14px; color: #333; margin-bottom: 30px; font-weight: 700; }
-        .count-info b { color: var(--main-orange); }
-
-        /* --- [수정] 반응형 랜딩 그리드 시스템 (가로 100% 최적화) --- */
-        .landing-grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); /* 기본 4열 */
-            gap: 24px; 
-            padding-bottom: 60px; 
+        /* --- 메인 레이아웃: 가로 100% 꽉 채우기 --- */
+        .wrapper { 
+            display: flex; 
+            width: 100%;
+            margin: 0; 
+            padding: 0 40px; 
+            min-height: calc(100vh - 60px); 
         }
 
-        .card { width: 100%; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-light); cursor: pointer; transition: 0.3s; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .card-thumb { position: relative; width: 100%; aspect-ratio: 430 / 232; background: #f9f9f9; overflow: hidden; }
-        .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; z-index: 5; }
-        .card:hover .card-overlay { opacity: 1; }
-        .ov-title { font-size: 14px; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; }
-        .ov-meta { font-size: 12px; color: rgba(255,255,255,0.8); }
+        .sidebar { 
+            width: 180px; 
+            padding: 60px 0; 
+            flex-shrink: 0; 
+            margin-right: 40px; 
+        }
+        .side-item { padding: 12px 20px; font-size: 14px; font-weight: 700; color: #666; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; }
+        .side-item.active { background: #f3f3f3; color: var(--text-black); }
 
-        /* --- 모달 디자인 (고정) --- */
-        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-        .modal-wrap { background: #fff; width: 100%; height: 100vh; display: flex; }
-        .modal-container { background: #fff; margin: 0 auto; width: 1188px; height: 100%; display: flex; flex-direction: row; overflow: hidden; position: relative; }
-        .modal-close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; z-index: 2100; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .modal-img-area { flex: 1; background: #F7F8F9; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
-        .modal-img-list { width: 100%; background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
-        .modal-img-list img { width: 100%; display: block; }
-        .modal-img-list.is-pc-view { max-width: 884px; }
-        .modal-img-list.is-mo-view { max-width: 430px; }
-        .modal-info-area { width: 380px; padding: 40px 30px; background: #fff; border-left: 1px solid var(--border-light); height: 100%; overflow-y: auto; flex-shrink: 0; }
-        .info-box { border: 1px solid #eee; border-radius: 16px; padding: 25px; }
-        .md-brand-txt { color: var(--main-orange); font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; }
-        .md-title-big { font-size: 22px; font-weight: 800; margin-bottom: 25px; line-height: 1.4; color: #111; }
-        .md-meta-info { margin-bottom: 30px; }
-        .md-meta-info p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #666; }
-        .md-device-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        .md-device-btn { flex: 1; padding: 14px; border: 1px solid #eee; background: #fff; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; color: #aaa; }
-        .md-device-btn.active { background: var(--main-orange); color: #fff; border-color: var(--main-orange); }
-        .md-link-group { display: flex; gap: 10px; }
-        .md-link-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #f2f4f7; border-radius: 10px; text-decoration: none; color: #333; font-size: 13px; font-weight: 700; }
-        
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 40px 0 80px; }
-        .page-num { background: none; border: 1px solid #eee; font-size: 16px; font-weight: 500; color: #333; cursor: pointer; min-width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
-        .page-num.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
+        .main-content { flex-grow: 1; padding: 60px 0; width: 100%; }
+        .main-title { font-size: 42px; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px; }
 
-        /* --- [반응형 핵심 미디어 쿼리] --- */
-        @media (max-width: 1600px) { .landing-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 1200px) {
-            .inner-container { padding: 0 30px; }
-            .landing-grid { grid-template-columns: repeat(2, 1fr); }
-            .modal-container { width: 95%; height: 90vh; }
+        .search-area { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+        .search-container { position: relative; width: 100%; max-width: 320px; }
+        .search-container input { width: 100%; padding: 12px 18px; padding-right: 45px; border: 1px solid #ddd; border-radius: 8px; background: #fdfdfd; font-size: 14px; outline: none; }
+        .search-container i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
+
+        .brand-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+        .brand-btn { padding: 8px 16px; border-radius: 20px; background: #f1f3f7; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border: none; transition: 0.2s; }
+        .brand-btn.active { background: var(--primary-orange) !important; color: #fff !important; }
+
+        .banner-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px; 
+        }
+        .banner-grid.grid-5 { grid-template-columns: repeat(6, 1fr); gap: 15px; }
+
+        .banner-item { border-radius: 12px; transition: 0.3s; cursor: pointer; position: relative; overflow: hidden; border: 1px solid var(--border-light); }
+        .banner-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .img-box { width: 100%; border-radius: 12px; overflow: hidden; background: #f4f4f4; display: flex; align-items: center; justify-content: center; }
+        .img-box img { width: 100%; height: auto; display: block; }
+        
+        .count-info { font-size: 14px; font-weight: 700; margin-bottom: 20px; color: #444; }
+        .count-info b { color: var(--primary-orange); }
+
+        .pagination { display: flex; justify-content: center; margin-top: 50px; gap: 8px; flex-wrap: wrap; }
+        .page-dot { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #eee; background: #fff; cursor: pointer; font-weight: 700; color: #999; }
+        .page-dot.active { background: var(--primary-orange); color: #fff; border-color: var(--primary-orange); }
+
+        /* 반응형 구간 */
+        @media (max-width: 1400px) {
+            .banner-grid { grid-template-columns: repeat(3, 1fr); }
+            .banner-grid.grid-5 { grid-template-columns: repeat(4, 1fr); }
         }
         @media (max-width: 1024px) {
-            .modal-container { flex-direction: column; width: 100%; height: 100%; }
-            .modal-info-area { width: 100%; height: auto; border-left: none; border-top: 1px solid var(--border-light); }
-            .modal-img-area { padding: 60px 20px 20px; }
+            .banner-grid { grid-template-columns: repeat(2, 1fr); }
+            .banner-grid.grid-5 { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 768px) {
-            .inner-container { padding: 0 20px; }
-            .header-main { flex-direction: column; align-items: flex-start; padding: 30px 0; }
-            .search-container { max-width: 100%; }
-            .landing-grid { grid-template-columns: 1fr; gap: 20px; }
+            .wrapper { flex-direction: column; padding: 0 20px; }
+            .sidebar { width: 100%; padding: 20px 0; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+            .sidebar::-webkit-scrollbar { display: none; }
+            .side-item { margin-bottom: 0; white-space: nowrap; flex-shrink: 0; }
+            .main-title { display: none; }
+            .main-content { padding: 10px 0 60px; }
+            .banner-grid { grid-template-columns: 1fr; }
+            .banner-grid.grid-5 { grid-template-columns: repeat(2, 1fr); }
             .nav-content { padding: 0 20px; gap: 30px; }
-            .nav-links { gap: 15px; }
         }
     </style>
 </head>
 <body>
 
-<div class="site-wrapper">
-    <nav class="top-nav">
-        <div class="nav-content">
-            <a href="#" class="nav-logo">
-                <img src="./images/logo.jpg" alt="WeaD Logo">
-            </a>
-            <div class="nav-links">
-                <a href="#" class="active">랜딩페이지</a>
-                <a href="banner.html">배너</a>
-            </div>
+<nav class="top-nav">
+    <div class="nav-content">
+        <a href="#" class="nav-logo">
+            <img src="./images/logo.jpg" alt="WeaD Logo">
+        </a>
+        <div class="nav-links">
+            <a href="landing.html">랜딩</a>
+            <a href="banner.html" class="active">배너</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <div class="inner-container">
-        <div class="header-main">
-            <h1>Archive</h1>
+<div class="wrapper">
+    <div class="sidebar">
+        <div class="main-title">Banner</div>
+        <div class="side-item active" onclick="changeCategory('타임보드', this)">타임보드</div>
+        <div class="side-item" onclick="changeCategory('페이스북', this)">페이스북</div>
+    </div>
+
+    <div class="main-content">
+        <div class="search-area">
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="페이지, 기획자, 디자이너 검색" onkeyup="handleSearch()">
+                <input type="text" id="searchInput" placeholder="키워드를 입력해주세요." oninput="realTimeSearch()">
                 <i class="fas fa-search"></i>
             </div>
         </div>
-        <div class="filter-section">
-            <div class="tab-container" id="tabContainer"></div>
-            <div class="count-info">결과: <b id="totalCount">0개</b></div>
-        </div>
-        <div id="grid" class="landing-grid"></div>
-        <div id="pagination" class="pagination"></div>
-    </div>
 
-    <div id="modalOverlay" onclick="if(event.target === this) closeModal()">
-        <div class="modal-wrap">
-            <div class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
-            <div class="modal-container">
-                <div class="modal-img-area" id="modalImgScroll">
-                    <div class="modal-img-list" id="modalImgList"></div>
-                </div>
-                <div class="modal-info-area">
-                    <div class="info-box">
-                        <span id="mdBrand" class="md-brand-txt">BRAND</span>
-                        <h2 id="mdTitle" class="md-title-big">TITLE</h2>
-                        <div class="md-meta-info">
-                            <p>기획 <span><b id="mdPlanner">-</b></span></p>
-                            <p>디자인 <span><b id="mdDesigner">-</b></span></p>
-                        </div>
-                        <div class="md-device-group">
-                            <button id="btnPC" class="md-device-btn" onclick="switchDevice('pc')">PC</button>
-                            <button id="btnMO" class="md-device-btn" onclick="switchDevice('mo')">모바일</button>
-                        </div>
-                        <div class="md-link-group">
-                            <a id="mdLiveBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-external-link-alt"></i> 라이브</a>
-                            <a id="mdFigmaBtn" href="#" target="_blank" class="md-link-btn"><i class="fas fa-file-signature"></i> 디자인 파일</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="brand-filters" id="brandPills"></div>
+        <div class="count-info" id="totalCnt">총 <b>0개</b>의 배너 (전체)</div>
+        <div id="bannerGrid" class="banner-grid"></div>
+        <div id="pagination" class="pagination"></div>
     </div>
 </div>
 
 <script>
-    /* 스크립트 로직은 원본 코드를 그대로 유지했습니다. */
+    /* 스크립트 로직 유지 */
     const SUPABASE_URL = 'https://pfuwdbgnxkxcchjlwauc.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_GTnHAd2Q2wtlLjynoct2UA_r5RDvSPU';
-    const BUCKET_NAME = 'landing';
-    const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const BUCKET = 'banner';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let allItems = [], currentTab = 'all', currentPage = 1, itemsPerPage = 20, currentModalData = null;
+    const brandMap = { "더위크": "theweek", "더위크영어": "theweek_english", "더위크일본어": "theweek_japanese", "더위크스페인어": "theweek_spanish", "더위크중국어": "theweek_chinese", "결합상품": "bundle", "비아지오": "viaggio", "노르드킨": "nordkin", "기타": "others" };
+    const categoryMap = { "타임보드": "timeboard", "페이스북": "facebook" };
+    let currentCategory = '타임보드', currentBrand = '전체', currentPage = 1, itemsPerPage = 30, rollIntervals = {};
+    let searchTimer;
 
-    const brandKoMap = {
-        'viaggio': '비아지오',
-        'nordkin': '노르드킨',
-        'theweek': '더위크',
-        'paper': '더위크',
-        'japer': '더위크 일본어',
-        'v6': 'V6',
-        'hx5': 'HX5',
-        'hlg': 'HLG'
-    };
+    function realTimeSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(() => { currentPage = 1; search(); }, 300); }
 
-    const getKoName = (name) => {
-        if(!name) return '';
-        return brandKoMap[name.toLowerCase().trim()] || name.toUpperCase();
-    };
-
-    async function init() {
-        const { data } = await supabaseClient.from('wead').select('*');
-        if (data) {
-            const pattern = /^[a-zA-Z0-9]+-\d+-\d+$/;
-            allItems = data.filter(i => pattern.test(i.page_name));
-            renderBrandTabs();
-            applyFilters();
-        }
-    }
-
-    function renderBrandTabs() {
-        const container = document.getElementById('tabContainer');
-        const brands = [...new Set(allItems.map(i => i.brand))].filter(Boolean).sort();
-        let tabHtml = `<button class="tab-btn active" onclick="filterByTab('all', this)">전체</button>`;
-        brands.forEach(brand => {
-            tabHtml += `<button class="tab-btn" onclick="filterByTab('${brand}', this)">${getKoName(brand)}</button>`;
-        });
-        container.innerHTML = tabHtml;
-    }
-
-    function applyFilters() {
-        let filtered = allItems;
-        if (currentTab !== 'all') filtered = filtered.filter(i => i.brand === currentTab);
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        if (query) {
-            filtered = filtered.filter(i => 
-                i.page_name.toLowerCase().includes(query) ||
-                (i.content_text && i.content_text.toLowerCase().includes(query)) ||
-                (i.designer && i.designer.toLowerCase().includes(query)) ||
-                (i.planner && i.planner.toLowerCase().includes(query))
-            );
-        }
-
-        filtered.sort((a, b) => {
-            const isATheWeek = a.brand && a.brand.toLowerCase().trim() === 'theweek';
-            const isBTheWeek = b.brand && b.brand.toLowerCase().trim() === 'theweek';
-            if (isATheWeek && !isBTheWeek) return -1;
-            if (!isATheWeek && isBTheWeek) return 1;
-            return b.page_name.localeCompare(a.page_name, undefined, {numeric: true});
-        });
-
-        const unique = Array.from(new Map(filtered.map(i => [i.page_name, i])).values());
-        document.getElementById('totalCount').innerText = `${unique.length}개`;
-        const totalPages = Math.ceil(unique.length / itemsPerPage);
-        renderGrid(unique.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
-        renderPagination(totalPages);
-    }
-
-    function renderGrid(data) {
-        const grid = document.getElementById('grid');
-        grid.innerHTML = data.map(f => {
-            const root = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${f.brand}/${f.page_name}`;
-            return `<div class="card" onclick="openModal('${f.page_name}')"><div class="card-thumb"><img src="${root}/pc/thum.jpg" onerror="this.onerror=function(){this.onerror=function(){this.src='https://via.placeholder.com/430x232?text=No+Image'};this.src='${root}/mo/01.jpg'};this.src='${root}/pc/01.jpg';"><div class="card-overlay"><div><div class="ov-title">${f.page_name.toUpperCase()}</div><div class="ov-meta">${f.planner || '-'} / ${f.designer || '-'}</div></div></div></div></div>`;
-        }).join('');
-    }
-
-    function openModal(pageName) {
-        const pcData = allItems.find(i => i.page_name === pageName && i.type === 'pc');
-        const moData = allItems.find(i => i.page_name === pageName && i.type === 'mo');
-        currentModalData = { pageName, pcData, moData };
-        const base = pcData || moData;
-        document.getElementById('mdBrand').innerText = getKoName(base.brand);
-        document.getElementById('mdTitle').innerText = pageName;
-        document.getElementById('mdPlanner').innerText = base.planner || '-';
-        document.getElementById('mdDesigner').innerText = base.designer || '-';
-        const figmaBtn = document.getElementById('mdFigmaBtn');
-        if(base.file_key && base.file_key !== '-' && base.file_key !== '') {
-            figmaBtn.href = `https://www.figma.com/file/${base.file_key}/?node-id=${base.id}`;
-            figmaBtn.style.display = 'flex';
+    function getSingleUrl(brand, category, frameName, nodeId) {
+        const brandEng = brandMap[brand.replace(/\s/g, "").normalize('NFC')] || "others";
+        const categoryEng = categoryMap[category] || "others";
+        const idSuffix = nodeId.replace(':', '_');
+        if (categoryEng === 'facebook') {
+            const fbMatch = String(frameName).match(/(\d+)_(\d+x\d+)/);
+            const fileName = fbMatch ? `fb_${fbMatch[2]}_${fbMatch[1]}_${idSuffix}` : `fb_${String(frameName).replace(/\s/g, '_')}_${idSuffix}`;
+            return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${brandEng}/${categoryEng}/${fileName}.jpg`;
         } else {
-            figmaBtn.style.display = 'none';
-        }
-        document.getElementById('modalOverlay').style.display = 'flex';
-        switchDevice(pcData ? 'pc' : 'mo');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function switchDevice(type) {
-        const list = document.getElementById('modalImgList'); list.innerHTML = '';
-        list.classList.remove('is-pc-view', 'is-mo-view');
-        list.classList.add(type === 'pc' ? 'is-pc-view' : 'is-mo-view');
-        const base = currentModalData.pcData || currentModalData.moData;
-        for(let i=1; i<=25; i++) {
-            const img = document.createElement('img');
-            img.src = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${base.brand}/${currentModalData.pageName}/${type}/${i.toString().padStart(2,'0')}.jpg`;
-            img.onerror = function() { this.remove(); }; list.appendChild(img);
-        }
-        document.getElementById('btnPC').classList.toggle('active', type === 'pc');
-        document.getElementById('btnMO').classList.toggle('active', type === 'mo');
-        const liveUrl = getLiveUrl(currentModalData.pageName, type);
-        const liveBtn = document.getElementById('mdLiveBtn');
-        if(liveUrl) { liveBtn.href = liveUrl; liveBtn.style.display = 'flex'; } else { liveBtn.style.display = 'none'; }
-        document.getElementById('modalImgScroll').scrollTop = 0;
-    }
-
-    function getLiveUrl(pageName, deviceType) {
-        let name = pageName; let upperName = pageName.toUpperCase(); let domain = ""; let path = (deviceType === 'pc') ? "/on_land/" : "/mo_land/";
-        if (upperName.startsWith('V6-')) { domain = "https://bike.w-rental.co.kr/rental/Rental_V6"; name = 'V6-' + name.split('-').slice(1).join('-'); } 
-        else if (upperName.startsWith('HX5P-')) { domain = "https://bike.w-rental.co.kr/rental/Rental_HX5"; name = 'HX5P-' + name.split('-').slice(1).join('-'); } 
-        else if (upperName.startsWith('HLG-')) { domain = "https://health.nordkin.co.kr/health/TM_HLG"; name = 'HLG-' + name.split('-').slice(1).join('-'); } 
-        else if (upperName.startsWith('PAPER-')) { domain = "https://www.theweek.co.kr/edu/Rental_wcomms"; name = 'Paper-' + name.split('-').slice(1).join('-') + '-01'; } 
-        else { domain = "https://www.viaggio.co.kr"; }
-        return `${domain}${path}${name}.html`;
-    }
-
-    function renderPagination(total) {
-        const pbox = document.getElementById('pagination'); pbox.innerHTML = ''; if(total <= 1) return;
-        for (let i = 1; i <= total; i++) {
-            const btn = document.createElement('button'); btn.className = `page-num ${i === currentPage ? 'active' : ''}`; btn.innerText = i;
-            btn.onclick = () => { currentPage = i; applyFilters(); window.scrollTo(0, 0); }; pbox.appendChild(btn);
+            const prefix = (String(frameName).match(/^[a-zA-Z0-9]+/) || ["banner"])[0];
+            return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${brandEng}/${categoryEng}/${prefix}_rolling1.jpg`;
         }
     }
 
-    function filterByTab(tab, btn) { currentTab = tab; currentPage = 1; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }
-    function handleSearch() { currentPage = 1; applyFilters(); }
-    function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
-    init();
+    async function search() {
+        const grid = document.getElementById('bannerGrid');
+        const keyword = document.getElementById('searchInput').value;
+        let query = supabaseClient.from('banner').select('*').eq('category', currentCategory.trim());
+        if (currentBrand !== '전체') query = query.eq('brand', currentBrand.trim());
+        if (keyword) query = query.or(`name.ilike.%${keyword}%,description.ilike.%${keyword}%,content_txt.ilike.%${keyword}%`);
+        const { data: allData } = await query.order('id', { ascending: false });
+        if (!allData || allData.length === 0) { document.getElementById('totalCnt').innerHTML = `총 <b>0개</b>`; grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;">데이터가 없습니다.</div>'; return; }
+
+        const seenPrefix = new Set();
+        const uniqueBanners = allData.filter(item => {
+            const nameStr = String(item.name || "");
+            const catClean = currentCategory.trim();
+            if (catClean.includes('페이스북')) {
+                const resMatch = nameStr.match(/(\d+)[\s]*[xX][\s]*(\d+)/);
+                if (resMatch) { return parseInt(resMatch[1]) === parseInt(resMatch[2]); }
+                return false; 
+            }
+            if (nameStr.includes('rolling2') || nameStr.includes('rolling3')) return false;
+            const prefix = (nameStr.match(/^[a-zA-Z0-9]+/) || [""])[0];
+            if (prefix && seenPrefix.has(prefix)) return false;
+            seenPrefix.add(prefix);
+            return true;
+        });
+
+        document.getElementById('totalCnt').innerHTML = `총 <b>${uniqueBanners.length}개</b>의 배너`;
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const pageBanners = uniqueBanners.slice(startIndex, startIndex + itemsPerPage);
+
+        grid.innerHTML = pageBanners.map(item => {
+            const thumbUrl = getSingleUrl(item.brand, item.category, item.name, item.id);
+            const rollingUrls = (currentCategory.includes('페이스북')) ? [thumbUrl] : [1, 2, 3].map(n => {
+                const prefix = (String(item.name).match(/^[a-zA-Z0-9]+/) || ["banner"])[0];
+                return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${brandMap[item.brand.replace(/\s/g, "").normalize('NFC')] || 'others'}/timeboard/${prefix}_rolling${n}.jpg`;
+            });
+            return `<div class="banner-item" data-id="${item.id}" onmouseenter='startRolling(this, ${JSON.stringify(rollingUrls)})' onmouseleave='stopRolling(this, "${rollingUrls[0]}")' onclick="window.open('https://www.figma.com/design/${item.file_key}/?node-id=${item.id.replace(':','-')}')"><div class="img-box"><img src="${rollingUrls[0]}" onerror="this.src='https://placehold.co/600x300?text=No+Image';"></div></div>`;
+        }).join('');
+        renderPagination(uniqueBanners.length);
+    }
+
+    function startRolling(el, urls) { if (urls.length <= 1) return; let i = 0; const img = el.querySelector('img'); clearInterval(rollIntervals[el.dataset.id]); rollIntervals[el.dataset.id] = setInterval(() => { i = (i + 1) % urls.length; img.src = urls[i]; }, 800); }
+    function stopRolling(el, firstUrl) { clearInterval(rollIntervals[el.dataset.id]); el.querySelector('img').src = firstUrl; }
+    function changeCategory(cat, el) { 
+        document.querySelectorAll('.side-item').forEach(i => i.classList.remove('active')); 
+        el.classList.add('active'); 
+        currentCategory = cat; 
+        currentBrand = '전체'; 
+        currentPage = 1; 
+        document.getElementById('bannerGrid').className = (cat.includes('페이스북')) ? 'banner-grid grid-5' : 'banner-grid'; 
+        search(); 
+        loadBrands(); 
+    }
+    async function loadBrands() { const { data } = await supabaseClient.from('banner').select('brand').eq('category', currentCategory.trim()); const brands = ['전체', ...new Set(data?.map(d => d.brand.normalize('NFC')) || [])]; document.getElementById('brandPills').innerHTML = brands.map(b => `<button class="brand-btn ${currentBrand === b ? 'active' : ''}" onclick="currentBrand='${b}'; currentPage=1; search(); loadBrands();">${b}</button>`).join(''); }
+    function renderPagination(total) { const totalPages = Math.ceil(total / itemsPerPage); if(total <= itemsPerPage) { document.getElementById('pagination').innerHTML = ''; return; } let html = ''; for (let i = 1; i <= totalPages; i++) html += `<div class="page-dot ${i === currentPage ? 'active' : ''}" onclick="currentPage=${i}; search(); window.scrollTo(0,0);">${i}</div>`; document.getElementById('pagination').innerHTML = html; }
+
+    window.onload = function() {
+        changeCategory('타임보드', document.querySelector('.side-item.active'));
+    };
 </script>
 </body>
 </html>
