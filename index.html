@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeaversDesign</title>
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        /* 네비게이션 바 */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 메인 히어로 섹션*/
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            text-align: center;
+        }
+
+        .bg-text {
+            font-size: 18vw;
+            font-weight: 900;
+            line-height: 0.8;
+            letter-spacing: -5px;
+            color: #111;
+            z-index: 1;
+        }
+
+        /* 중앙 이미지 스타일 */
+        .main-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40%; /* 이미지 크기 조절 */
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* 반응형 설정 */
+        @media (max-width: 768px) {
+            .bg-text { font-size: 25vw; }
+            nav { padding: 20px; }
+            .main-image { width: 70%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">WeaversDesign</div>
+        <div class="menu">
+            <a href="landing.html">랜딩페이지</a>
+            <a href="banner.html">배너</a>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <img style="width: auto" src="main.png" alt="Weavers Design Logo" class="main-image">
+    </main>
+
+</body>
+</html>
