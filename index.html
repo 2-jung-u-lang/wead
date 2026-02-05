@@ -40,11 +40,8 @@
             gap: 60px; 
         }
         .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; }
-        
-        /* [수정] 로고 이미지 크기를 다시 2/3 사이즈(32px)로 조정 */
         .nav-logo img { height: 73px; width: auto; }
 
-        .logo-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #ff8a00, #ff5c00, #9c27b0); border-radius: 4px; }
         .nav-links { display: flex; gap: 30px; }
         .nav-links a { font-size: 15px; font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover { color: #ff5c00; }
@@ -56,7 +53,7 @@
         }
         .hero img { width: 100%; max-width: 1440px; }
 
-        /* 4. Works 섹션 (자동 슬라이더 & 비율 720:824) */
+        /* 4. Works 섹션 (자동 슬라이더) */
         .works-section { padding: 100px 0; }
         .section-label { 
             font-size: clamp(24px, 1.667vw, 32px);
@@ -88,13 +85,13 @@
         .dot { width: 8px; height: 8px; background: #e2e2e2; border-radius: 50%; transition: all 0.3s; cursor: pointer; }
         .dot.active { width: 32px; height: 8px; background: #1a1a1a; border-radius: 4px; }
 
-        /* 5. 프로젝트 설명 (62px / 24px) */
+        /* 5. 프로젝트 설명 */
         .description-wrapper { width: 100%; background-color: #F4F5F6; padding: 140px 0; margin-top: 100px; }
         .description-section { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
         .desc-content h2 { font-size: clamp(32px, 3.229vw, 62px); font-weight: 800; line-height: 1.2; letter-spacing: -2px; }
         .desc-meta { font-size: clamp(18px, 1.25vw, 24px); color: #555; text-align: right; line-height: 1.6; padding-top: 10px; }
 
-        /* 6. Page Design (드래그 슬라이더 & 호버 버튼) */
+        /* 6. Page Design (드래그 슬라이더) */
         .gallery-section { padding: 100px 0; }
         .category-header { margin: 120px 0 40px; text-align: center; }
         .category-header p { font-size: clamp(24px, 1.667vw, 32px); font-weight: 700; margin-bottom: 15px; }
@@ -137,9 +134,9 @@
         .next-btn-circle:hover svg path { stroke: #ff5c00; }
 
         .scroll-bar-bg { width: 100%; height: 4px; background-color: #e2e2e2; margin-top: 40px; position: relative; border-radius: 2px; }
-        .scroll-bar-fill { position: absolute; top: 0; left: 0; width: 20%; height: 100%; background-color: #1a1a1a; border-radius: 2px; }
+        .scroll-bar-fill { position: absolute; top: 0; left: 0; width: 20%; height: 100%; background-color: #1a1a1a; border-radius: 2px; transition: left 0.2s ease-out; }
 
-        /* 7. Banner Design (핀터레스트 Masonry) */
+        /* 7. Banner Design */
         .banner-grid { column-count: 4; column-gap: 16px; width: 100%; }
         .banner-item { 
             break-inside: avoid; margin-bottom: 16px; border-radius: 16px; 
@@ -157,6 +154,7 @@
         .footer-orange-bar { width: 100%; background-color: #FF5C00; }
         .footer-orange-bar img { width: 100%; }
         .footer-dark-archive { background-color: #1a1c1e; color: #ffffff; width: 100%; padding: 100px 0; }
+
         .footer-content { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; padding: 0 12.5%; }
         .footer-brands-section { display: flex; flex-direction: column; gap: 30px; }
         .footer-large-text { font-size: clamp(16px, 1.042vw, 20px); font-weight: 700; }
@@ -338,15 +336,88 @@
         const wTrack = document.getElementById('worksTrack');
         const wDots = document.querySelectorAll('#worksDots .dot');
         let wIdx = 0;
-        function moveW(i) { wIdx = (i + wDots.length) % wDots.length; wTrack.style.transform = `translateX(-${wIdx * 100}%)`; wDots.forEach(d => d.classList.remove('active')); wDots[wIdx].classList.add('active'); }
+        const totalSlides = wDots.length;
+
+        function moveW(i) {
+            wIdx = (i + totalSlides) % totalSlides;
+            wTrack.style.transform = `translateX(-${wIdx * 100}%)`;
+            wDots.forEach((d, idx) => {
+                d.classList.toggle('active', idx === wIdx);
+            });
+        }
+
         document.getElementById('worksNext').onclick = () => moveW(wIdx + 1);
         document.getElementById('worksPrev').onclick = () => moveW(wIdx - 1);
-        wDots.forEach(d => d.onclick = (e) => moveW(parseInt(e.target.dataset.index)));
-        setInterval(() => moveW(wIdx + 1), 5000);
+        
+        wDots.forEach(d => {
+            d.onclick = (e) => moveW(parseInt(e.target.dataset.index));
+        });
 
-        /* --- 2. Page Design 드래그 & 버튼 기능 --- */
+        // 자동 슬라이드 (5초)
+        let autoSlide = setInterval(() => moveW(wIdx + 1), 5000);
+
+        // 사용자가 버튼 클릭 시 타이머 리셋
+        const resetTimer = () => {
+            clearInterval(autoSlide);
+            autoSlide = setInterval(() => moveW(wIdx + 1), 5000);
+        };
+        document.getElementById('worksNext').addEventListener('click', resetTimer);
+        document.getElementById('worksPrev').addEventListener('click', resetTimer);
+
+
+        /* --- 2. Page Design 드래그 & 다음 버튼 기능 --- */
         const pSlider = document.getElementById('pageScroll');
         const pFill = document.getElementById('scrollFill');
-        let isDown = false, startX, scrollLeft;
 
-        pSlider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - pSlider.
+		// [수정] 다음 버튼 클릭 시 다음 아이템으로 스크롤 (마지막이면 처음으로)
+        function scrollToNext(event) {
+            event.stopPropagation();
+            const items = pSlider.querySelectorAll('.gallery-item');
+            const itemWidth = items[0].offsetWidth + 24; // 너비 + gap
+            const maxScroll = pSlider.scrollWidth - pSlider.clientWidth;
+
+            // 현재 스크롤 위치가 끝에 도달했는지 확인 (약간의 오차 범위 5px 허용)
+            if (pSlider.scrollLeft >= maxScroll - 5) {
+                pSlider.scrollTo({ left: 0, behavior: 'smooth' }); // 처음으로 이동
+            } else {
+                pSlider.scrollBy({ left: itemWidth, behavior: 'smooth' }); // 다음으로 이동
+            }
+        }
+
+        // 스크롤 바 업데이트
+        pSlider.addEventListener('scroll', () => {
+            const maxScroll = pSlider.scrollWidth - pSlider.clientWidth;
+            if (maxScroll <= 0) return;
+            const scrollPercent = (pSlider.scrollLeft / maxScroll) * 80; // 100% - fill(20%)
+            pFill.style.left = scrollPercent + '%';
+        });
+
+        // 드래그 기능 구현
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        pSlider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - pSlider.offsetLeft;
+            scrollLeft = pSlider.scrollLeft;
+            pSlider.style.scrollSnapType = 'none';
+        });
+        pSlider.addEventListener('mouseleave', () => { 
+            isDown = false; 
+            pSlider.style.scrollSnapType = 'x mandatory'; 
+        });
+        pSlider.addEventListener('mouseup', () => { 
+            isDown = false; 
+            pSlider.style.scrollSnapType = 'x mandatory'; 
+        });
+        pSlider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - pSlider.offsetLeft;
+            const walk = (x - startX) * 2; 
+            pSlider.scrollLeft = scrollLeft - walk;
+        });
+    </script>
+</body>
+</html>
