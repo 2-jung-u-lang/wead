@@ -3,27 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeaD Archive - User Portal v60.6</title>
+    <title>WeaD Archive - User Portal v61.0</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --main-orange: #FFA364;
-            --text-black: #111;
-            --text-grey: #666;
-            --border-light: #eee;
-            --bg-light: #f8f8f8;
-        }
-
-        /* Base Setup */
+        /* [기존 스타일 유지] */
+        :root { --main-orange: #FFA364; --text-black: #111; --text-grey: #666; --border-light: #eee; --bg-light: #f8f8f8; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
         body { background-color: #ffffff; color: var(--text-black); overflow-x: hidden; }
-
         .site-wrapper { max-width: 100%; margin: 0 auto; background-color: #fff; min-height: 100vh; position: relative; }
         .inner-container { max-width: 100%; margin: 0 auto; padding: 0 20px; }
         @media (min-width: 768px) { .inner-container { padding: 0 50px; } }
-
-        /* Header */
         header { height: 70px; border-bottom: 1px solid var(--border-light); background: #fff; position: sticky; top: 0; z-index: 1000; }
         header .inner-container { display: flex; align-items: center; justify-content: space-between; height: 100%; }
         .logo { display: flex; align-items: center; font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
@@ -33,23 +23,17 @@
         .gnb-menu a { text-decoration: none; color: var(--text-grey); font-size: 16px; font-weight: 700; height: 70px; display: flex; align-items: center; position: relative; }
         .gnb-menu a.active { color: var(--text-black); }
         .gnb-menu a.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background-color: var(--text-black); }
-
-        /* Content Header */
         .header-main { padding: 50px 0 20px; display: flex; flex-direction: column; gap: 20px; }
         @media (min-width: 768px) { .header-main { flex-direction: row; justify-content: space-between; align-items: center; } }
         .header-main h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
-        .search-container { position: relative; width: 100%; max-width: 350px; }
+        .search-container { position: relative; width: 100%; max-width: 450px; }
         .search-container input { width: 100%; padding: 14px 45px 14px 20px; border: 1px solid #ddd; border-radius: 12px; background-color: var(--bg-light); outline: none; }
         .search-container i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; }
-
-        /* Tabs */
         .tab-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; }
+        .tab-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-light); background: #fff; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; text-transform: uppercase; }
         .tab-btn.active { background-color: var(--main-orange); color: #fff; border-color: var(--main-orange); }
         .count-info { font-size: 14px; color: #333; margin-bottom: 30px; }
         .count-info b { color: var(--main-orange); }
-
-        /* Grid */
         .landing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding-bottom: 60px; justify-content: center; }
         .card { width: 100%; max-width: 430px; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-light); cursor: pointer; transition: 0.3s; justify-self: center; }
         .card-thumb { position: relative; width: 100%; aspect-ratio: 430 / 232; background: #f9f9f9; overflow: hidden; }
@@ -60,65 +44,19 @@
         .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); opacity: 0; transition: 0.3s; padding: 20px; display: flex; align-items: flex-end; justify-content: space-between; color: #fff; }
         .card:hover .card-overlay { opacity: 1; }
-
-        /* --- [수정] 팝업창 꽉 채우기 설정 --- */
-        #modalOverlay { 
-            display: none; position: fixed; top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); z-index: 2000; 
-            justify-content: center; align-items: center; 
-            backdrop-filter: blur(8px); 
-            padding: 0; /* 패딩 제거하여 꽉 채움 */
-        }
-        
-        .modal-wrap { 
-            background: #fff;
-            width: 100%; /* 너비 100% */
-            height: 100vh; /* 높이 100% */
-            display: flex; 
-        }
-        
-        .modal-container { 
-            background: #fff; 
-			margin: 0 auto;
-            width: 1188px; 
-            height: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            border-radius: 0; /* 전체 화면 시 둥근 모서리 제거 */
-            overflow: hidden; 
-            position: relative; 
-        }
+        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 0; }
+        .modal-wrap { background: #fff; width: 100%; height: 100vh; display: flex; }
+        .modal-container { background: #fff; margin: 0 auto; width: 1188px; height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         @media (min-width: 1024px) { .modal-container { flex-direction: row; } }
-
-        .modal-close { 
-            position: absolute; top: 20px; right: 20px; 
-            width: 44px; height: 44px; background: #fff; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            font-size: 24px; cursor: pointer; z-index: 2100; box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-        }
-
-        /* 이미지 영역 (독립 스크롤 유지) */
-        .modal-img-area { 
-            flex: 1; background: #F7F8F9; overflow-y: auto; display: flex; flex-direction: column; 
-            align-items: center; padding: 40px 20px; 
-        }
+        .modal-close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; z-index: 2100; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .modal-img-area { flex: 1; background: #F7F8F9; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
         .modal-img-list { width: 100%; background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
         .modal-img-list img { width: 100%; display: block; }
-        
         .modal-img-list.is-pc-view { max-width: 884px; }
         .modal-img-list.is-mo-view { max-width: 430px; }
-
-        /* 정보 영역 디자인 유지 */
-        .modal-info-area { 
-            width: 100%; padding: 40px 30px; border-top: 1px solid var(--border-light); 
-            background: #fff; flex-shrink: 0; 
-        }
-        @media (min-width: 1024px) { 
-            .modal-info-area { width: 380px; border-top: none; border-left: 1px solid var(--border-light); height: 100%; overflow-y: auto; } 
-        }
+        .modal-info-area { width: 100%; padding: 40px 30px; border-top: 1px solid var(--border-light); background: #fff; flex-shrink: 0; }
+        @media (min-width: 1024px) { .modal-info-area { width: 380px; border-top: none; border-left: 1px solid var(--border-light); height: 100%; overflow-y: auto; } }
         .info-box { border: 1px solid #eee; border-radius: 16px; padding: 25px; }
-        
         .md-brand-txt { color: var(--main-orange); font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; }
         .md-title-big { font-size: 22px; font-weight: 800; margin-bottom: 25px; line-height: 1.4; color: #111; }
         .md-meta-info { margin-bottom: 30px; }
@@ -129,7 +67,6 @@
         .md-device-btn.active { background: var(--main-orange); color: #fff; border-color: var(--main-orange); }
         .md-link-group { display: flex; gap: 10px; }
         .md-link-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #f2f4f7; border-radius: 10px; text-decoration: none; color: #333; font-size: 13px; font-weight: 700; }
-
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 40px 0 80px; flex-wrap: wrap; }
         .page-num { background: none; border: none; font-size: 18px; font-weight: 500; color: #333; cursor: pointer; min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
         .page-num.active { background-color: var(--main-orange); color: #fff; }
@@ -146,20 +83,18 @@
     </header>
 
     <div class="inner-container">
+
         <div class="header-main">
             <h1>Archive</h1>
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="페이지명 또는 키워드 검색" onkeyup="handleSearch()">
+                <input type="text" id="searchInput" placeholder="페이지, 기획/디자이너, 시안 내 문구 검색" onkeyup="handleSearch()">
                 <i class="fas fa-search"></i>
             </div>
         </div>
 
         <div class="filter-section">
             <div class="tab-container" id="tabContainer">
-                <button class="tab-btn active" onclick="filterByTab('all', this)">전체</button>
-                <button class="tab-btn" onclick="filterByTab('viaggio', this)">비아지오</button>
-                <button class="tab-btn" onclick="filterByTab('nordkin', this)">노르드킨</button>
-            </div>
+                </div>
             <div class="count-info">결과: <b id="totalCount">0개</b></div>
         </div>
 
@@ -170,8 +105,7 @@
     <div id="modalOverlay" onclick="if(event.target === this) closeModal()">
         <div class="modal-wrap">
             <div class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
-			<div class="modal-container">
-                
+            <div class="modal-container">
                 <div class="modal-img-area" id="modalImgScroll">
                     <div class="modal-img-list" id="modalImgList"></div>
                 </div>
@@ -199,7 +133,6 @@
 </div>
 
 <script>
-    /* Supabase 설정 및 기존 스크립트 로직 유지 */
     const SUPABASE_URL = 'https://pfuwdbgnxkxcchjlwauc.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_GTnHAd2Q2wtlLjynoct2UA_r5RDvSPU';
     const BUCKET_NAME = 'landing';
@@ -211,19 +144,45 @@
     async function init() {
         const { data } = await supabaseClient.from('wead').select('*');
         if (data) {
-            const pattern = /^[a-zA-Z0-9]+-\d{1,2}-\d{1,2}$/;
+            const pattern = /^[a-zA-Z0-9]+-\d+-\d+$/;
             allItems = data.filter(i => pattern.test(i.page_name));
+            
+            // 1. 브랜드 목록을 동적으로 추출하여 탭 버튼 생성
+            renderBrandTabs();
             applyFilters();
         }
     }
 
+    // [수정] 브랜드 데이터를 기반으로 탭 버튼 자동 생성
+    function renderBrandTabs() {
+        const container = document.getElementById('tabContainer');
+        const brands = [...new Set(allItems.map(i => i.brand))].filter(Boolean).sort();
+        
+        let tabHtml = `<button class="tab-btn active" onclick="filterByTab('all', this)">전체</button>`;
+        brands.forEach(brand => {
+            tabHtml += `<button class="tab-btn" onclick="filterByTab('${brand}', this)">${brand}</button>`;
+        });
+        container.innerHTML = tabHtml;
+    }
+
+    // [수정] 검색 로직 강화: content_text, designer, planner 포함
     function applyFilters() {
         let filtered = allItems;
         if (currentTab !== 'all') filtered = filtered.filter(i => i.brand === currentTab);
+        
         const query = document.getElementById('searchInput').value.toLowerCase();
-        if (query) filtered = filtered.filter(i => i.page_name.toLowerCase().includes(query));
+        if (query) {
+            filtered = filtered.filter(i => 
+                i.page_name.toLowerCase().includes(query) ||
+                (i.content_text && i.content_text.toLowerCase().includes(query)) || // 시안 내 문구 검색
+                (i.designer && i.designer.toLowerCase().includes(query)) ||       // 디자이너 검색
+                (i.planner && i.planner.toLowerCase().includes(query))            // 기획자 검색
+            );
+        }
+        
         filtered.sort((a, b) => b.page_name.localeCompare(a.page_name, undefined, {numeric: true}));
         const unique = Array.from(new Map(filtered.map(i => [i.page_name, i])).values());
+        
         document.getElementById('totalCount').innerText = `${unique.length}개`;
         const totalPages = Math.ceil(unique.length / itemsPerPage);
         renderGrid(unique.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
@@ -247,6 +206,7 @@
         }).join('');
     }
 
+    // 모달 및 디바이스 스위칭 로직 (기존 유지)
     function openModal(pageName) {
         const pcData = allItems.find(i => i.page_name === pageName && i.type === 'pc');
         const moData = allItems.find(i => i.page_name === pageName && i.type === 'mo');
@@ -268,7 +228,7 @@
         list.classList.remove('is-pc-view', 'is-mo-view');
         list.classList.add(type === 'pc' ? 'is-pc-view' : 'is-mo-view');
         const base = currentModalData.pcData || currentModalData.moData;
-        for(let i=1; i<=20; i++) {
+        for(let i=1; i<=25; i++) {
             const img = document.createElement('img');
             img.src = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${base.brand}/${currentModalData.pageName}/${type}/${i.toString().padStart(2,'0')}.jpg`;
             img.onerror = function() { this.remove(); }; list.appendChild(img);
