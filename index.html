@@ -13,15 +13,15 @@
         img { max-width: 100%; height: auto; display: block; -webkit-user-drag: none; }
         a { text-decoration: none; color: inherit; }
 
-        /* [핵심] 1920px 기준 좌우 여백 240px (12.5%) */
+        /* [핵심] 기본 12.5% 여백 / 화면이 작아지면 여백 자동 축소 */
         .container {
             width: 100%;
-            padding-left: 12.5%;
-            padding-right: 12.5%;
+            padding-left: clamp(20px, 12.5%, 240px);
+            padding-right: clamp(20px, 12.5%, 240px);
             margin: 0 auto;
         }
 
-        /* 2. 최상단 고정 메뉴 바 - 가로 100% 레이아웃 */
+        /* 2. 최상단 고정 메뉴 바 */
         .top-nav {
             position: fixed;
             top: 0; left: 0; 
@@ -37,51 +37,37 @@
             display: flex; 
             align-items: center; 
             justify-content: flex-start; 
-            gap: 60px; 
+            gap: clamp(20px, 4vw, 60px); 
         }
         .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; }
-        .nav-logo img { height: 73px; width: auto; }
+        .nav-logo img { height: clamp(40px, 5vw, 73px); width: auto; }
 
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { font-size: 15px; font-weight: 500; transition: color 0.2s; }
+        .nav-links { display: flex; gap: clamp(15px, 2vw, 30px); }
+        .nav-links a { font-size: clamp(13px, 1vw, 15px); font-weight: 500; transition: color 0.2s; white-space: nowrap; }
         .nav-links a:hover { color: #ff5c00; }
 
-		/* 3. 히어로 섹션 - 모바일 대응 수정 */
-		.hero {
-			width: 100%;
-			/* 데스크탑 기본 높이 */
-			height: calc(100vh - 60px);
-			position: relative;
-			overflow: hidden; /* 영역 밖으로 나가는 부분을 잘라냄 */
-			background-color: #000;
-		}
+        /* 3. 히어로 섹션 */
+        .hero {
+            width: 100%;
+            height: calc(100vh - 60px);
+            position: relative;
+            overflow: hidden;
+            background-color: #000;
+        }
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            pointer-events: none;
+        }
 
-		.hero-video {
-			width: 100%;
-			height: 100%;
-			/* 비율을 유지하며 영역을 꽉 채움 (주변이 잘릴 수 있음) */
-			object-fit: cover;
-			/* [핵심] 영상의 중앙을 기준으로 정렬하여 중요한 부분이 덜 잘리게 함 */
-			object-position: center center;
-			display: block;
-			pointer-events: none; /* 모바일 터치 방지 */
-		}
-
-		/* 모바일 화면 전용 레이아웃 조절 */
-		@media (max-width: 768px) {
-			.hero {
-				/* [핵심] 모바일에서는 높이를 줄여서 비디오가 너무 확대되어 잘리는 것을 방지 */
-				/* 값을 조절하여 원하는 비율을 맞춰보세요 (예: 50vh ~ 70vh) */
-				height: 60vh;
-				min-height: 300px; /* 너무 작아지는 것 방지 */
-			}
-		}
-
-        /* 4. Works 섹션 (자동 슬라이더) */
-        .works-section { padding: 100px 0; }
+        /* 4. Works 섹션 */
+        .works-section { padding: clamp(60px, 8vw, 100px) 0; }
         .section-label { 
             font-size: clamp(24px, 1.667vw, 32px);
-            font-weight: 600; margin-bottom: 60px; text-align: center; 
+            font-weight: 600; margin-bottom: clamp(30px, 5vw, 60px); text-align: center; 
         }
         .works-slider-wrapper { position: relative; width: 100%; }
         .works-viewport { overflow: hidden; width: 100%; }
@@ -110,14 +96,14 @@
         .dot.active { width: 32px; height: 8px; background: #1a1a1a; border-radius: 4px; }
 
         /* 5. 프로젝트 설명 */
-        .description-wrapper { width: 100%; background-color: #F4F5F6; padding: 140px 0; margin-top: 100px; }
+        .description-wrapper { width: 100%; background-color: #F4F5F6; padding: clamp(80px, 10vw, 140px) 0; margin-top: 100px; }
         .description-section { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
-        .desc-content h2 { font-size: clamp(32px, 3.229vw, 62px); font-weight: 800; line-height: 1.2; letter-spacing: -2px; }
-        .desc-meta { font-size: clamp(18px, 1.25vw, 24px); color: #555; text-align: right; line-height: 1.6; padding-top: 10px; }
+        .desc-content h2 { font-size: clamp(28px, 3.229vw, 62px); font-weight: 800; line-height: 1.2; letter-spacing: -1.5px; }
+        .desc-meta { font-size: clamp(16px, 1.25vw, 24px); color: #555; text-align: right; line-height: 1.6; padding-top: 10px; }
 
         /* 6. Page Design (드래그 슬라이더) */
-        .gallery-section { padding: 100px 0; }
-        .category-header { margin: 120px 0 40px; text-align: center; }
+        .gallery-section { padding: clamp(60px, 8vw, 100px) 0; }
+        .category-header { margin: clamp(60px, 8vw, 120px) 0 40px; text-align: center; }
         .category-header p { font-size: clamp(24px, 1.667vw, 32px); font-weight: 700; margin-bottom: 15px; }
         .view-more-btn {
             display: inline-flex; align-items: center; padding: 10px 32px;
@@ -127,75 +113,36 @@
         .view-more-btn:hover { border-color: #1a1a1a; color: #1a1a1a; background: #f9f9f9; }
 
         .gallery-scroll-container {
-            display: flex; 
-            gap: 24px; 
-            overflow-x: auto; 
-            scroll-snap-type: x mandatory; 
-            padding-bottom: 10px; 
-            scrollbar-width: none;
-            cursor: grab; 
-            user-select: none;
-            margin-right: -12.5vw; 
-            padding-right: 12.5vw; 
+            display: flex; gap: 24px; overflow-x: auto; 
+            scroll-snap-type: x mandatory; padding-bottom: 10px; scrollbar-width: none;
+            cursor: grab; user-select: none;
+            margin-right: -12.5vw; padding-right: 12.5vw; 
         }
-
         .gallery-scroll-container:active { cursor: grabbing; }
         .gallery-scroll-container::-webkit-scrollbar { display: none; }
 
         .gallery-item {
-            flex: 0 0 1062px; 
-            max-width: 85vw; 
-            scroll-snap-align: start; 
-            border-radius: 20px; 
-            overflow: hidden; 
-            position: relative;
-        }
-
-        .scroll-bar-bg { 
-            width: 100%; 
-            height: 4px; 
-            background-color: #e2e2e2; 
-            margin-top: 40px; 
-            position: relative; 
-            border-radius: 2px; 
+            flex: 0 0 1062px; max-width: 85vw; scroll-snap-align: start; 
+            border-radius: 20px; overflow: hidden; position: relative;
         }
         .item-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 40%);
             display: flex; align-items: flex-end; justify-content: space-between;
-            padding: 40px; opacity: 0; transition: opacity 0.3s ease;
+            padding: clamp(20px, 3vw, 40px); opacity: 0; transition: opacity 0.3s ease;
         }
         .gallery-item:hover .item-overlay { opacity: 1; }
         .overlay-text { color: #fff; text-align: left; }
-        .overlay-text h3 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-        .overlay-text p { font-size: 14px; opacity: 0.8; }
+        .overlay-text h3 { font-size: clamp(20px, 2vw, 28px); font-weight: 700; margin-bottom: 8px; }
+        .overlay-text p { font-size: clamp(12px, 1vw, 14px); opacity: 0.8; }
 
+        .scroll-bar-bg { width: 100%; height: 4px; background-color: #e2e2e2; margin-top: 40px; position: relative; border-radius: 2px; }
         .scroll-bar-fill { position: absolute; top: 0; left: 0; width: 20%; height: 100%; background-color: #1a1a1a; border-radius: 2px; transition: left 0.2s ease-out; }
 
         /* 7. Banner Design */
-        .banner-grid { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 16px; 
-            width: 100%; 
-        }
-        
-        .banner-row {
-            display: flex;
-            gap: 16px;
-            width: 100%;
-            align-items: flex-start;
-        }
-        
-        .banner-item { 
-            background: #f5f5f5; 
-            border-radius: 16px; 
-            overflow: hidden; 
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .banner-grid { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        .banner-row { display: flex; gap: 16px; width: 100%; align-items: flex-start; }
+        .banner-item { background: #f5f5f5; border-radius: 16px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; display: flex; align-items: center; justify-content: center; }
         .banner-item:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
         .banner-item img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -206,89 +153,45 @@
         .w678-h106 { flex: 678; aspect-ratio: 678 / 106; }
         .w217-h386 { flex: 217; aspect-ratio: 217 / 386; }
 
-        @media (max-width: 768px) {
-            .banner-row { flex-direction: column; }
-            .banner-item { flex: none; width: 100%; aspect-ratio: auto; }
+        /* 8. WeaD 소개 섹션 */
+        .wead-intro-section { padding: clamp(80px, 10vw, 120px) 0 clamp(200px, 30vw, 400px); text-align: center; }
+        .wead-intro-title { font-size: clamp(28px, 3.229vw, 62px); font-weight: 800; line-height: 1.3; margin-bottom: 40px; }
+        .wead-intro-desc { font-size: clamp(15px, 1.25vw, 24px); color: #555; line-height: 1.6; padding: 0 20px; }
+
+        /* 9. 푸터 */
+        .footer-orange-bar { width: 100%; background-color: #FF5C00; }
+        .footer-orange-bar img { width: 100%; }
+        .footer-dark-archive { background-color: #1a1c1e; color: #ffffff; width: 100%; padding: clamp(60px, 8vw, 100px) 0; }
+        .footer-content { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; padding: 0 12.5%; }
+        .footer-brands-section { display: flex; flex-direction: column; gap: 40px; }
+        .footer-large-text { font-size: clamp(18px, 1.5vw, 20px); font-weight: 700; line-height: 1.2; margin-bottom: clamp(20px, 3vw, 40px); }
+        .brand-link-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px clamp(20px, 5vw, 80px); }
+        .footer-small-text { font-size: clamp(13px, 1vw, 15px); color: #ffffff; font-weight: 500; line-height: 1.2; white-space: nowrap; }
+        .footer-info-section { text-align: right; display: flex; flex-direction: column; padding-top: 64px; gap: 15px; }
+        .copyright-text { color: #ffffff; font-size: clamp(12px, 1vw, 15px); font-weight: 500; line-height: 1.2; }
+
+        /* --- 반응형 종합 대응 --- */
+        @media (max-width: 1600px) {
+            .nav-arrow { display: none; }
         }
 
-        /* 8. WeaD 소개 섹션 */
-        .wead-intro-section { padding: 120px 0 400px; text-align: center; }
-        .wead-intro-title { font-size: clamp(32px, 3.229vw, 62px); font-weight: 800; line-height: 1.3; margin-bottom: 40px; }
-        .wead-intro-desc { font-size: clamp(16px, 1.25vw, 24px); color: #555; line-height: 1.6; }
+        @media (max-width: 1024px) {
+            .footer-content { flex-direction: column; gap: 60px; padding: 0 40px; }
+            .brand-link-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-info-section { text-align: left; padding-top: 0; }
+        }
 
-        /* 9. 푸터 - 레이어 정렬 정밀 수정 */
-		.footer-orange-bar { width: 100%; background-color: #FF5C00; }
-		.footer-orange-bar img { width: 100%; }
-
-		.footer-dark-archive { 
-			background-color: #1a1c1e; 
-			color: #ffffff; 
-			width: 100%; 
-			padding: 100px 0; 
-		}
-
-		.footer-content { 
-			display: flex; 
-			justify-content: space-between; 
-			align-items: flex-start; 
-			width: 100%; 
-			padding: 0 12.5%; 
-		}
-
-		/* 좌측 섹션 */
-		.footer-brands-section { 
-			display: flex; 
-			flex-direction: column; 
-		}
-
-		.footer-large-text { 
-			font-size: 20px; 
-			font-weight: 700; 
-			line-height: 1.2;
-			margin-bottom: 40px; /* 타이틀과 리스트 사이 간격 */
-		}
-
-		.brand-link-grid { 
-			display: grid; 
-			grid-template-columns: repeat(4, 1fr); 
-			gap: 15px 80px; /* 행 간격 15px */
-		}
-
-		.footer-small-text { 
-			font-size: 15px; 
-			color: #ffffff; 
-			font-weight: 500; 
-			line-height: 1.2; /* 수평 정렬을 위한 고정 높이 */
-			white-space: nowrap; 
-		}
-
-		/* 우측 섹션 - 좌측 브랜드 리스트 첫 줄에 높이 맞춤 */
-		.footer-info-section { 
-			text-align: right; 
-			display: flex; 
-			flex-direction: column; 
-			/* 좌측 'Design Brands' 타이틀(20px) + 간격(40px)만큼 내려서 정렬 시작 */
-			padding-top: 64px; 
-			gap: 15px; /* 좌측 리스트 행 간격(15px)과 동일하게 설정 */
-		}
-
-		.footer-info-section .footer-large-text {
-			margin-bottom: 0; /* 내부 간격은 gap으로 제어 */
-		}
-
-		.copyright-text { 
-			color: #ffffff; 
-			font-size: 15px; 
-			font-weight: 500; 
-			line-height: 1.2;
-		}
-
-		/* 반응형 */
-		@media (max-width: 1024px) { 
-			.footer-content { flex-direction: column; gap: 60px; padding: 0 40px; }
-			.brand-link-grid { grid-template-columns: repeat(2, 1fr); gap: 15px 40px; }
-			.footer-info-section { text-align: left; padding-top: 0; }
-		}
+        @media (max-width: 768px) {
+            .nav-content { padding: 0 20px; }
+            .hero { height: 60vh; min-height: 300px; }
+            .works-grid { flex-direction: column; }
+            .work-column { aspect-ratio: auto; }
+            .description-section { flex-direction: column; gap: 20px; }
+            .desc-meta { text-align: left; padding-top: 0; }
+            .banner-row { flex-direction: column; }
+            .banner-item { flex: none; width: 100%; aspect-ratio: auto; height: 200px; }
+            .gallery-scroll-container { margin-right: -20px; padding-right: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -296,7 +199,7 @@
     <nav class="top-nav">
         <div class="nav-content">
             <a href="index.html" class="nav-logo">
-                <img src="./images/logo.png">
+                <img src="./images/logo.png" alt="WeaD Logo">
             </a>
             <div class="nav-links">
                 <a href="landing.html">랜딩</a>
@@ -330,20 +233,30 @@
                         <div class="works-slide">
                             <div class="works-grid">
                                 <div class="work-item large"><img src="./images/work_04.png"></div>
-                                <div class="work-column"><div class="work-item small"><img src="./images/work_05.png"></div><div class="work-item small"><img src="./images/work_06.png"></div></div>
+                                <div class="work-column">
+                                    <div class="work-item small"><img src="./images/work_05.png"></div>
+                                    <div class="work-item small"><img src="./images/work_06.png"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="works-slide">
                             <div class="works-grid">
                                 <div class="work-item large"><img src="./images/work_07.png"></div>
-                                <div class="work-column"><div class="work-item small"><img src="./images/work_08.png"></div><div class="work-item small"><img src="./images/work_09.png"></div></div>
+                                <div class="work-column">
+                                    <div class="work-item small"><img src="./images/work_08.png"></div>
+                                    <div class="work-item small"><img src="./images/work_09.png"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="nav-arrow arrow-right" id="worksNext"></div>
             </div>
-            <div class="slider-controls" id="worksDots"><span class="dot active" data-index="0"></span><span class="dot" data-index="1"></span><span class="dot" data-index="2"></span></div>
+            <div class="slider-controls" id="worksDots">
+                <span class="dot active" data-index="0"></span>
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+            </div>
         </div>
     </section>
 
@@ -360,7 +273,7 @@
         <div class="container">
             <div class="category-header">
                 <p>Page Design</p>
-                <a href="landing.html" class="view-more-btn">View more</a>
+                <a href="#" class="view-more-btn">View more</a>
             </div>
             <div class="gallery-scroll-container" id="pageScroll">
                 <div class="gallery-item">
@@ -402,7 +315,7 @@
         <div class="container">
             <div class="category-header">
                 <p>Banner Design</p>
-                <a href="banner.html" class="view-more-btn">View more</a>
+                <a href="#" class="view-more-btn">View more</a>
             </div>
 
             <div class="banner-grid">
@@ -443,7 +356,7 @@
 
     <div class="footer-orange-bar"><img src="./images/company.png" alt="Company Bar"></div>
     
-	<footer class="footer-dark-archive">
+    <footer class="footer-dark-archive">
         <div class="footer-content">
             <div class="footer-brands-section">
                 <h3 class="footer-large-text">Design Brands</h3>
@@ -452,7 +365,6 @@
                     <span class="footer-small-text">The Week CN</span>
                     <span class="footer-small-text">The Week FR</span>
                     <span class="footer-small-text">VIAGGIO</span>
-                    
                     <span class="footer-small-text">The Week JP</span>
                     <span class="footer-small-text">The Week ES</span>
                     <span class="footer-small-text">Speaking Max</span>
@@ -538,4 +450,3 @@
     </script>
 </body>
 </html>
-
