@@ -46,12 +46,24 @@
         .nav-links a { font-size: 15px; font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover { color: #ff5c00; }
 
-        /* 3. 히어로 섹션 */
-        .hero {
-            width: 100%; height: calc(100vh - 60px);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .hero img { width: 100%; max-width: 1440px; }
+		/* 3. 히어로 섹션 - 풀 스크린 버전 */
+		.hero {
+			width: 100%;
+			/* 상단 메뉴(60px)를 제외한 나머지 화면 높이 전체 */
+			height: calc(100vh - 60px); 
+			position: relative;
+			overflow: hidden;
+			background-color: #000;
+		}
+
+		.hero-video {
+			/* 영상을 부모 박스 크기에 100% 맞춤 */
+			width: 100%;
+			height: 100%;
+			/* [핵심] 영상 비율을 유지하면서 박스를 빈틈없이 채움 (잘리는 부분 발생 가능) */
+			object-fit: cover; 
+			display: block;
+		}
 
         /* 4. Works 섹션 (자동 슬라이더) */
         .works-section { padding: 100px 0; }
@@ -102,19 +114,46 @@
         .view-more-btn::after { content: '→'; margin-left: 8px; }
         .view-more-btn:hover { border-color: #1a1a1a; color: #1a1a1a; background: #f9f9f9; }
 
-        .gallery-scroll-container {
-            display: flex; gap: 24px; overflow-x: auto; 
-            scroll-snap-type: x mandatory; padding-bottom: 10px; scrollbar-width: none;
-            cursor: grab; user-select: none;
-        }
-        .gallery-scroll-container:active { cursor: grabbing; }
-        .gallery-scroll-container::-webkit-scrollbar { display: none; }
-        
-        .gallery-item {
-            flex: 0 0 1062px; max-width: 90vw; scroll-snap-align: start; 
-            border-radius: 20px; overflow: hidden; position: relative;
-        }
+		/* 6. Page Design (드래그 슬라이더) - 왼쪽 정렬 및 우측 끝 확장 */
+		.gallery-scroll-container {
+			display: flex; 
+			gap: 24px; 
+			overflow-x: auto; 
+			scroll-snap-type: x mandatory; 
+			padding-bottom: 10px; 
+			scrollbar-width: none;
+			cursor: grab; 
+			user-select: none;
 
+			/* [핵심 수정] */
+			/* 왼쪽은 부모 컨테이너의 12.5% 패딩에 의해 하단 바와 정렬이 자동으로 맞습니다. */
+			/* 오른쪽만 부모의 패딩(-12.5%)을 깨고 화면 끝까지 확장합니다. */
+			margin-right: -12.5vw; 
+			padding-right: 12.5vw; /* 마지막 카드가 화면 끝에 붙지 않도록 여백 부여 */
+		}
+
+		.gallery-scroll-container:active { cursor: grabbing; }
+		.gallery-scroll-container::-webkit-scrollbar { display: none; }
+
+		/* 썸네일 카드 너비 유지 */
+		.gallery-item {
+			flex: 0 0 1062px; 
+			max-width: 85vw; 
+			scroll-snap-align: start; 
+			border-radius: 20px; 
+			overflow: hidden; 
+			position: relative;
+		}
+
+		/* [추가] 하단 스크롤바는 컨테이너 안에 유지 */
+		.scroll-bar-bg { 
+			width: 100%; 
+			height: 4px; 
+			background-color: #e2e2e2; 
+			margin-top: 40px; 
+			position: relative; 
+			border-radius: 2px; 
+		}
         .item-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 40%);
@@ -137,16 +176,55 @@
         .scroll-bar-fill { position: absolute; top: 0; left: 0; width: 20%; height: 100%; background-color: #1a1a1a; border-radius: 2px; transition: left 0.2s ease-out; }
 
         /* 7. Banner Design */
-        .banner-grid { column-count: 4; column-gap: 16px; width: 100%; }
-        .banner-item { 
-            break-inside: avoid; margin-bottom: 16px; border-radius: 16px; 
-            overflow: hidden; background: #f5f5f5; transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .banner-item:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-        .banner-item img { width: 100%; height: auto; display: block; }
+        .banner-grid { 
+			display: flex; 
+			flex-direction: column; 
+			gap: 16px; 
+			width: 100%; 
+		}
+		
+		.banner-row {
+			display: flex;
+			gap: 16px;
+			width: 100%;
+			align-items: flex-start; /* 높이가 다를 경우 상단 정렬 */
+		}
+		
+		.banner-item { 
+			background: #f5f5f5; 
+			border-radius: 16px; 
+			overflow: hidden; 
+			transition: transform 0.3s, box-shadow 0.3s;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.banner-item:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+		.banner-item img { width: 100%; height: 100%; object-fit: cover; }
+		
+		/* 이미지에 적힌 수치를 바탕으로 한 비율 및 Aspect Ratio 설정 */
+		/* Row 1 */
+		.w223-h223 { flex: 223; aspect-ratio: 223 / 223; }
+		.w427-h223 { flex: 427; aspect-ratio: 427 / 223; }
+
+		/* Row 2 */
+		.w233-h291 { flex: 233; aspect-ratio: 233 / 291; }
+		.w556-h291 { flex: 556; aspect-ratio: 556 / 291; }
+
+		/* Row 3 */
+		.w678-h106 { flex: 678; aspect-ratio: 678 / 106; }
+
+		/* Row 4 */
+		.w217-h386 { flex: 217; aspect-ratio: 217 / 386; }
+
+		/* 반응형: 모바일에서는 한 줄에 하나씩 */
+		@media (max-width: 768px) {
+			.banner-row { flex-direction: column; }
+			.banner-item { flex: none; width: 100%; aspect-ratio: auto; }
+		}
 
         /* 8. WeaD 소개 섹션 */
-        .wead-intro-section { padding: 120px 0; text-align: center; }
+        .wead-intro-section { padding: 120px 0 400px; text-align: center; }
         .wead-intro-title { font-size: clamp(32px, 3.229vw, 62px); font-weight: 800; line-height: 1.3; margin-bottom: 40px; }
         .wead-intro-desc { font-size: clamp(16px, 1.25vw, 24px); color: #555; line-height: 1.6; }
 
@@ -185,7 +263,7 @@
     <nav class="top-nav">
         <div class="nav-content">
             <a href="index.html" class="nav-logo">
-                <img src="./images/logo.jpg">
+                <img src="./images/logo.png">
             </a>
             <div class="nav-links">
                 <a href="landing.html">랜딩</a>
@@ -194,9 +272,11 @@
         </div>
     </nav>
 
-    <header class="hero">
-        <div class="container" style="display:flex; justify-content:center; padding:0;"><img src="./images/main.png" alt="Hero"></div>
-    </header>
+	<header class="hero">
+		<video autoplay muted loop playsinline  class="hero-video">
+			<source src="./images/mov.mp4" type="video/mp4">
+		</video>
+	</header>
 
     <section class="works-section">
         <div class="container">
@@ -245,41 +325,39 @@
 
     <section class="gallery-section" id="landing">
         <div class="container">
-            <div class="category-header"><p>Page Design</p></div>
+            <div class="category-header">
+				<p>Page Design</p>
+				<a href="#" class="view-more-btn">View more</a>
+			</div>
             <div class="gallery-scroll-container" id="pageScroll">
                 <div class="gallery-item">
                     <img src="./images/Landing_01.png">
                     <div class="item-overlay">
                         <div class="overlay-text"><h3>매일 2분 영어루틴, 사전예약 0원</h3><p>기획 천세진&nbsp;&nbsp;&nbsp;디자인 천세진</p></div>
-                        <div class="next-btn-circle" onclick="scrollToNext(event)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
                     </div>
                 </div>
                 <div class="gallery-item">
                     <img src="./images/Landing_02.png">
                     <div class="item-overlay">
                         <div class="overlay-text"><h3>새해맞이 한정 패키지 출시</h3><p>기획 정유진&nbsp;&nbsp;&nbsp;디자인 이찬규</p></div>
-                        <div class="next-btn-circle" onclick="scrollToNext(event)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
                     </div>
                 </div>
                 <div class="gallery-item">
                     <img src="./images/Landing_03.png">
                     <div class="item-overlay">
                         <div class="overlay-text"><h3>글로벌 영어 캠프 아카이빙</h3><p>기획 윤고은&nbsp;&nbsp;&nbsp;디자인 허지희</p></div>
-                        <div class="next-btn-circle" onclick="scrollToNext(event)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
                     </div>
                 </div>
                 <div class="gallery-item">
                     <img src="./images/Landing_04.png">
                     <div class="item-overlay">
                         <div class="overlay-text"><h3>The Week</h3><p>기획 천세진&nbsp;&nbsp;&nbsp;디자인 천세진</p></div>
-                        <div class="next-btn-circle" onclick="scrollToNext(event)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
                     </div>
                 </div>
                 <div class="gallery-item">
                     <img src="./images/Landing_05.png">
                     <div class="item-overlay">
                         <div class="overlay-text"><h3>더위크 가을 체험단</h3><p>기획 정유진&nbsp;&nbsp;&nbsp;디자인 이찬규</p></div>
-                        <div class="next-btn-circle" onclick="scrollToNext(event)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
                     </div>
                 </div>
             </div>
@@ -287,23 +365,41 @@
         </div>
     </section>
 
-    <section class="gallery-section" id="banner" style="padding-top:0;">
-        <div class="container">
-            <div class="category-header"><p>Banner Design</p><a href="#" class="view-more-btn">View more</a></div>
-            <div class="banner-grid">
-                <div class="banner-item"><img src="images/banner_01.png"></div>
-                <div class="banner-item"><img src="images/banner_02.png"></div>
-                <div class="banner-item"><img src="images/banner_03.png"></div>
-                <div class="banner-item"><img src="images/banner_04.png"></div>
-                <div class="banner-item"><img src="images/banner_05.png"></div>
-                <div class="banner-item"><img src="images/banner_06.png"></div>
-                <div class="banner-item"><img src="images/banner_07.png"></div>
-                <div class="banner-item"><img src="images/banner_08.png"></div>
-                <div class="banner-item"><img src="images/banner_09.png"></div>
-                <div class="banner-item"><img src="images/banner_10.png"></div>
-            </div>
-        </div>
-    </section>
+	<section class="gallery-section" id="banner" style="padding-top:0;">
+		<div class="container">
+			<div class="category-header">
+				<p>Banner Design</p>
+				<a href="#" class="view-more-btn">View more</a>
+			</div>
+
+			<div class="banner-grid">
+				<div class="banner-row">
+					<div class="banner-item w223-h223"><img src="images/banner_01.png" alt="223X223"></div>
+					<div class="banner-item w427-h223"><img src="images/banner_02.png" alt="427X223"></div>
+					<div class="banner-item w223-h223"><img src="images/banner_03.png" alt="223X223"></div>
+					<div class="banner-item w427-h223"><img src="images/banner_04.png" alt="427X223"></div>
+				</div>
+
+				<div class="banner-row">
+					<div class="banner-item w233-h291"><img src="images/banner_05.png" alt="233X291"></div>
+					<div class="banner-item w556-h291"><img src="images/banner_06.png" alt="556X291"></div>
+					<div class="banner-item w233-h291"><img src="images/banner_07.png" alt="233X291"></div>
+				</div>
+
+				<div class="banner-row">
+					<div class="banner-item w678-h106"><img src="images/banner_08.png" alt="678X106"></div>
+					<div class="banner-item w678-h106"><img src="images/banner_09.png" alt="678X106"></div>
+				</div>
+
+				<div class="banner-row">
+					<div class="banner-item w223-h223"><img src="images/banner_10.png" alt="223X223"></div>
+					<div class="banner-item w217-h386"><img src="images/banner_11.png" alt="217X386"></div>
+					<div class="banner-item w556-h291"><img src="images/banner_12.png" alt="556X291"></div>
+					<div class="banner-item w223-h223"><img src="images/banner_13.png" alt="223X223"></div>
+				</div>
+			</div>
+		</div>
+	</section>
 
     <section class="wead-intro-section">
         <div class="container">
