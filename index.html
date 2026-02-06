@@ -46,24 +46,21 @@
         .nav-links a { font-size: 15px; font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover { color: #ff5c00; }
 
-		/* 3. 히어로 섹션 - 풀 스크린 버전 */
-		.hero {
-			width: 100%;
-			/* 상단 메뉴(60px)를 제외한 나머지 화면 높이 전체 */
-			height: calc(100vh - 60px); 
-			position: relative;
-			overflow: hidden;
-			background-color: #000;
-		}
+        /* 3. 히어로 섹션 - 풀 스크린 버전 */
+        .hero {
+            width: 100%;
+            height: calc(100vh - 60px); 
+            position: relative;
+            overflow: hidden;
+            background-color: #000;
+        }
 
-		.hero-video {
-			/* 영상을 부모 박스 크기에 100% 맞춤 */
-			width: 100%;
-			height: 100%;
-			/* [핵심] 영상 비율을 유지하면서 박스를 빈틈없이 채움 (잘리는 부분 발생 가능) */
-			object-fit: cover; 
-			display: block;
-		}
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            display: block;
+        }
 
         /* 4. Works 섹션 (자동 슬라이더) */
         .works-section { padding: 100px 0; }
@@ -114,46 +111,39 @@
         .view-more-btn::after { content: '→'; margin-left: 8px; }
         .view-more-btn:hover { border-color: #1a1a1a; color: #1a1a1a; background: #f9f9f9; }
 
-		/* 6. Page Design (드래그 슬라이더) - 왼쪽 정렬 및 우측 끝 확장 */
-		.gallery-scroll-container {
-			display: flex; 
-			gap: 24px; 
-			overflow-x: auto; 
-			scroll-snap-type: x mandatory; 
-			padding-bottom: 10px; 
-			scrollbar-width: none;
-			cursor: grab; 
-			user-select: none;
+        .gallery-scroll-container {
+            display: flex; 
+            gap: 24px; 
+            overflow-x: auto; 
+            scroll-snap-type: x mandatory; 
+            padding-bottom: 10px; 
+            scrollbar-width: none;
+            cursor: grab; 
+            user-select: none;
+            margin-right: -12.5vw; 
+            padding-right: 12.5vw; 
+        }
 
-			/* [핵심 수정] */
-			/* 왼쪽은 부모 컨테이너의 12.5% 패딩에 의해 하단 바와 정렬이 자동으로 맞습니다. */
-			/* 오른쪽만 부모의 패딩(-12.5%)을 깨고 화면 끝까지 확장합니다. */
-			margin-right: -12.5vw; 
-			padding-right: 12.5vw; /* 마지막 카드가 화면 끝에 붙지 않도록 여백 부여 */
-		}
+        .gallery-scroll-container:active { cursor: grabbing; }
+        .gallery-scroll-container::-webkit-scrollbar { display: none; }
 
-		.gallery-scroll-container:active { cursor: grabbing; }
-		.gallery-scroll-container::-webkit-scrollbar { display: none; }
+        .gallery-item {
+            flex: 0 0 1062px; 
+            max-width: 85vw; 
+            scroll-snap-align: start; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            position: relative;
+        }
 
-		/* 썸네일 카드 너비 유지 */
-		.gallery-item {
-			flex: 0 0 1062px; 
-			max-width: 85vw; 
-			scroll-snap-align: start; 
-			border-radius: 20px; 
-			overflow: hidden; 
-			position: relative;
-		}
-
-		/* [추가] 하단 스크롤바는 컨테이너 안에 유지 */
-		.scroll-bar-bg { 
-			width: 100%; 
-			height: 4px; 
-			background-color: #e2e2e2; 
-			margin-top: 40px; 
-			position: relative; 
-			border-radius: 2px; 
-		}
+        .scroll-bar-bg { 
+            width: 100%; 
+            height: 4px; 
+            background-color: #e2e2e2; 
+            margin-top: 40px; 
+            position: relative; 
+            border-radius: 2px; 
+        }
         .item-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 40%);
@@ -165,97 +155,125 @@
         .overlay-text h3 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
         .overlay-text p { font-size: 14px; opacity: 0.8; }
 
-        .next-btn-circle {
-            width: 64px; height: 64px; border: 2px solid #fff; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s;
-        }
-        .next-btn-circle:hover { background: #fff; }
-        .next-btn-circle:hover svg path { stroke: #ff5c00; }
-
-        .scroll-bar-bg { width: 100%; height: 4px; background-color: #e2e2e2; margin-top: 40px; position: relative; border-radius: 2px; }
         .scroll-bar-fill { position: absolute; top: 0; left: 0; width: 20%; height: 100%; background-color: #1a1a1a; border-radius: 2px; transition: left 0.2s ease-out; }
 
         /* 7. Banner Design */
         .banner-grid { 
-			display: flex; 
-			flex-direction: column; 
-			gap: 16px; 
-			width: 100%; 
-		}
-		
-		.banner-row {
-			display: flex;
-			gap: 16px;
-			width: 100%;
-			align-items: flex-start; /* 높이가 다를 경우 상단 정렬 */
-		}
-		
-		.banner-item { 
-			background: #f5f5f5; 
-			border-radius: 16px; 
-			overflow: hidden; 
-			transition: transform 0.3s, box-shadow 0.3s;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.banner-item:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-		.banner-item img { width: 100%; height: 100%; object-fit: cover; }
-		
-		/* 이미지에 적힌 수치를 바탕으로 한 비율 및 Aspect Ratio 설정 */
-		/* Row 1 */
-		.w223-h223 { flex: 223; aspect-ratio: 223 / 223; }
-		.w427-h223 { flex: 427; aspect-ratio: 427 / 223; }
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px; 
+            width: 100%; 
+        }
+        
+        .banner-row {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            align-items: flex-start;
+        }
+        
+        .banner-item { 
+            background: #f5f5f5; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .banner-item:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+        .banner-item img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .w223-h223 { flex: 223; aspect-ratio: 223 / 223; }
+        .w427-h223 { flex: 427; aspect-ratio: 427 / 223; }
+        .w233-h291 { flex: 233; aspect-ratio: 233 / 291; }
+        .w556-h291 { flex: 556; aspect-ratio: 556 / 291; }
+        .w678-h106 { flex: 678; aspect-ratio: 678 / 106; }
+        .w217-h386 { flex: 217; aspect-ratio: 217 / 386; }
 
-		/* Row 2 */
-		.w233-h291 { flex: 233; aspect-ratio: 233 / 291; }
-		.w556-h291 { flex: 556; aspect-ratio: 556 / 291; }
-
-		/* Row 3 */
-		.w678-h106 { flex: 678; aspect-ratio: 678 / 106; }
-
-		/* Row 4 */
-		.w217-h386 { flex: 217; aspect-ratio: 217 / 386; }
-
-		/* 반응형: 모바일에서는 한 줄에 하나씩 */
-		@media (max-width: 768px) {
-			.banner-row { flex-direction: column; }
-			.banner-item { flex: none; width: 100%; aspect-ratio: auto; }
-		}
+        @media (max-width: 768px) {
+            .banner-row { flex-direction: column; }
+            .banner-item { flex: none; width: 100%; aspect-ratio: auto; }
+        }
 
         /* 8. WeaD 소개 섹션 */
         .wead-intro-section { padding: 120px 0 400px; text-align: center; }
         .wead-intro-title { font-size: clamp(32px, 3.229vw, 62px); font-weight: 800; line-height: 1.3; margin-bottom: 40px; }
         .wead-intro-desc { font-size: clamp(16px, 1.25vw, 24px); color: #555; line-height: 1.6; }
 
-        /* 9. 푸터 */
-        .footer-orange-bar { width: 100%; background-color: #FF5C00; }
-        .footer-orange-bar img { width: 100%; }
-        .footer-dark-archive { background-color: #1a1c1e; color: #ffffff; width: 100%; padding: 100px 0; }
+        /* 9. 푸터 - 레이어 정렬 정밀 수정 */
+		.footer-orange-bar { width: 100%; background-color: #FF5C00; }
+		.footer-orange-bar img { width: 100%; }
 
-        .footer-content { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; padding: 0 12.5%; }
-        .footer-brands-section { display: flex; flex-direction: column; gap: 30px; }
-        .footer-large-text { font-size: clamp(16px, 1.042vw, 20px); font-weight: 700; }
-        .footer-small-text { font-size: clamp(13px, 0.833vw, 16px); color: #bbbbbb; line-height: 1.8; }
-        .brand-link-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 60px; margin-top: 20px; }
-        .footer-info-section { text-align: right; display: flex; flex-direction: column; gap: 15px; }
-        .copyright-text { color: #888; font-size: clamp(12px, 0.833vw, 16px); }
+		.footer-dark-archive { 
+			background-color: #1a1c1e; 
+			color: #ffffff; 
+			width: 100%; 
+			padding: 100px 0; 
+		}
 
-        /* 반응형 대응 */
-        @media (max-width: 1600px) { .nav-arrow { display: none; } .container { padding-left: 5%; padding-right: 5%; } }
-        @media (max-width: 1024px) { 
-            .banner-grid { column-count: 3; } 
-            .footer-content { flex-direction: column; gap: 60px; padding: 0 40px; }
-            .brand-link-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-info-section { text-align: left; }
-        }
-        @media (max-width: 768px) {
-            .nav-content { gap: 30px; }
-            .works-grid { flex-direction: column; } .work-column { aspect-ratio: auto; }
-            .banner-grid { column-count: 2; }
-            .description-section { flex-direction: column; } .desc-meta { text-align: left; margin-top: 20px; }
-            .item-overlay { padding: 20px; } .overlay-text h3 { font-size: 18px; } .next-btn-circle { width: 44px; height: 44px; }
-        }
+		.footer-content { 
+			display: flex; 
+			justify-content: space-between; 
+			align-items: flex-start; 
+			width: 100%; 
+			padding: 0 12.5%; 
+		}
+
+		/* 좌측 섹션 */
+		.footer-brands-section { 
+			display: flex; 
+			flex-direction: column; 
+		}
+
+		.footer-large-text { 
+			font-size: 20px; 
+			font-weight: 700; 
+			line-height: 1.2;
+			margin-bottom: 40px; /* 타이틀과 리스트 사이 간격 */
+		}
+
+		.brand-link-grid { 
+			display: grid; 
+			grid-template-columns: repeat(4, 1fr); 
+			gap: 15px 80px; /* 행 간격 15px */
+		}
+
+		.footer-small-text { 
+			font-size: 15px; 
+			color: #ffffff; 
+			font-weight: 500; 
+			line-height: 1.2; /* 수평 정렬을 위한 고정 높이 */
+			white-space: nowrap; 
+		}
+
+		/* 우측 섹션 - 좌측 브랜드 리스트 첫 줄에 높이 맞춤 */
+		.footer-info-section { 
+			text-align: right; 
+			display: flex; 
+			flex-direction: column; 
+			/* 좌측 'Design Brands' 타이틀(20px) + 간격(40px)만큼 내려서 정렬 시작 */
+			padding-top: 64px; 
+			gap: 15px; /* 좌측 리스트 행 간격(15px)과 동일하게 설정 */
+		}
+
+		.footer-info-section .footer-large-text {
+			margin-bottom: 0; /* 내부 간격은 gap으로 제어 */
+		}
+
+		.copyright-text { 
+			color: #ffffff; 
+			font-size: 15px; 
+			font-weight: 500; 
+			line-height: 1.2;
+		}
+
+		/* 반응형 */
+		@media (max-width: 1024px) { 
+			.footer-content { flex-direction: column; gap: 60px; padding: 0 40px; }
+			.brand-link-grid { grid-template-columns: repeat(2, 1fr); gap: 15px 40px; }
+			.footer-info-section { text-align: left; padding-top: 0; }
+		}
     </style>
 </head>
 <body>
@@ -272,11 +290,11 @@
         </div>
     </nav>
 
-	<header class="hero">
-		<video autoplay muted loop playsinline  class="hero-video">
-			<source src="./images/mov.mp4" type="video/mp4">
-		</video>
-	</header>
+    <header class="hero">
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="./images/mov.mp4" type="video/mp4">
+        </video>
+    </header>
 
     <section class="works-section">
         <div class="container">
@@ -326,9 +344,9 @@
     <section class="gallery-section" id="landing">
         <div class="container">
             <div class="category-header">
-				<p>Page Design</p>
-				<a href="#" class="view-more-btn">View more</a>
-			</div>
+                <p>Page Design</p>
+                <a href="#" class="view-more-btn">View more</a>
+            </div>
             <div class="gallery-scroll-container" id="pageScroll">
                 <div class="gallery-item">
                     <img src="./images/Landing_01.png">
@@ -365,41 +383,41 @@
         </div>
     </section>
 
-	<section class="gallery-section" id="banner" style="padding-top:0;">
-		<div class="container">
-			<div class="category-header">
-				<p>Banner Design</p>
-				<a href="#" class="view-more-btn">View more</a>
-			</div>
+    <section class="gallery-section" id="banner" style="padding-top:0;">
+        <div class="container">
+            <div class="category-header">
+                <p>Banner Design</p>
+                <a href="#" class="view-more-btn">View more</a>
+            </div>
 
-			<div class="banner-grid">
-				<div class="banner-row">
-					<div class="banner-item w223-h223"><img src="images/banner_01.png" alt="223X223"></div>
-					<div class="banner-item w427-h223"><img src="images/banner_02.png" alt="427X223"></div>
-					<div class="banner-item w223-h223"><img src="images/banner_03.png" alt="223X223"></div>
-					<div class="banner-item w427-h223"><img src="images/banner_04.png" alt="427X223"></div>
-				</div>
+            <div class="banner-grid">
+                <div class="banner-row">
+                    <div class="banner-item w223-h223"><img src="images/banner_01.png" alt="223X223"></div>
+                    <div class="banner-item w427-h223"><img src="images/banner_02.png" alt="427X223"></div>
+                    <div class="banner-item w223-h223"><img src="images/banner_03.png" alt="223X223"></div>
+                    <div class="banner-item w427-h223"><img src="images/banner_04.png" alt="427X223"></div>
+                </div>
 
-				<div class="banner-row">
-					<div class="banner-item w233-h291"><img src="images/banner_05.png" alt="233X291"></div>
-					<div class="banner-item w556-h291"><img src="images/banner_06.png" alt="556X291"></div>
-					<div class="banner-item w233-h291"><img src="images/banner_07.png" alt="233X291"></div>
-				</div>
+                <div class="banner-row">
+                    <div class="banner-item w233-h291"><img src="images/banner_05.png" alt="233X291"></div>
+                    <div class="banner-item w556-h291"><img src="images/banner_06.png" alt="556X291"></div>
+                    <div class="banner-item w233-h291"><img src="images/banner_07.png" alt="233X291"></div>
+                </div>
 
-				<div class="banner-row">
-					<div class="banner-item w678-h106"><img src="images/banner_08.png" alt="678X106"></div>
-					<div class="banner-item w678-h106"><img src="images/banner_09.png" alt="678X106"></div>
-				</div>
+                <div class="banner-row">
+                    <div class="banner-item w678-h106"><img src="images/banner_08.png" alt="678X106"></div>
+                    <div class="banner-item w678-h106"><img src="images/banner_09.png" alt="678X106"></div>
+                </div>
 
-				<div class="banner-row">
-					<div class="banner-item w223-h223"><img src="images/banner_10.png" alt="223X223"></div>
-					<div class="banner-item w217-h386"><img src="images/banner_11.png" alt="217X386"></div>
-					<div class="banner-item w556-h291"><img src="images/banner_12.png" alt="556X291"></div>
-					<div class="banner-item w223-h223"><img src="images/banner_13.png" alt="223X223"></div>
-				</div>
-			</div>
-		</div>
-	</section>
+                <div class="banner-row">
+                    <div class="banner-item w223-h223"><img src="images/banner_10.png" alt="223X223"></div>
+                    <div class="banner-item w217-h386"><img src="images/banner_11.png" alt="217X386"></div>
+                    <div class="banner-item w556-h291"><img src="images/banner_12.png" alt="556X291"></div>
+                    <div class="banner-item w223-h223"><img src="images/banner_13.png" alt="223X223"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section class="wead-intro-section">
         <div class="container">
@@ -409,17 +427,24 @@
     </section>
 
     <div class="footer-orange-bar"><img src="./images/company.png" alt="Company Bar"></div>
-    <footer class="footer-dark-archive">
+    
+	<footer class="footer-dark-archive">
         <div class="footer-content">
             <div class="footer-brands-section">
                 <h3 class="footer-large-text">Design Brands</h3>
                 <div class="brand-link-grid">
-                    <div class="brand-column"><span class="footer-small-text">The Week EN</span><span class="footer-small-text">The Week JP</span></div>
-                    <div class="brand-column"><span class="footer-small-text">The Week CN</span><span class="footer-small-text">The Week ES</span></div>
-                    <div class="brand-column"><span class="footer-small-text">The Week FR</span><span class="footer-small-text">Speaking Max</span></div>
-                    <div class="brand-column"><span class="footer-small-text">VIAGGIO</span><span class="footer-small-text">Nordkin</span></div>
+                    <span class="footer-small-text">The Week EN</span>
+                    <span class="footer-small-text">The Week CN</span>
+                    <span class="footer-small-text">The Week FR</span>
+                    <span class="footer-small-text">VIAGGIO</span>
+                    
+                    <span class="footer-small-text">The Week JP</span>
+                    <span class="footer-small-text">The Week ES</span>
+                    <span class="footer-small-text">Speaking Max</span>
+                    <span class="footer-small-text">Nordkin</span>
                 </div>
             </div>
+
             <div class="footer-info-section">
                 <h3 class="footer-large-text">Weavers Group Design Archive</h3>
                 <span class="copyright-text">Copyright 2026 WeaversMind All Rights Reserved.</span>
@@ -449,10 +474,8 @@
             d.onclick = (e) => moveW(parseInt(e.target.dataset.index));
         });
 
-        // 자동 슬라이드 (5초)
         let autoSlide = setInterval(() => moveW(wIdx + 1), 5000);
 
-        // 사용자가 버튼 클릭 시 타이머 리셋
         const resetTimer = () => {
             clearInterval(autoSlide);
             autoSlide = setInterval(() => moveW(wIdx + 1), 5000);
@@ -465,30 +488,13 @@
         const pSlider = document.getElementById('pageScroll');
         const pFill = document.getElementById('scrollFill');
 
-		// [수정] 다음 버튼 클릭 시 다음 아이템으로 스크롤 (마지막이면 처음으로)
-        function scrollToNext(event) {
-            event.stopPropagation();
-            const items = pSlider.querySelectorAll('.gallery-item');
-            const itemWidth = items[0].offsetWidth + 24; // 너비 + gap
-            const maxScroll = pSlider.scrollWidth - pSlider.clientWidth;
-
-            // 현재 스크롤 위치가 끝에 도달했는지 확인 (약간의 오차 범위 5px 허용)
-            if (pSlider.scrollLeft >= maxScroll - 5) {
-                pSlider.scrollTo({ left: 0, behavior: 'smooth' }); // 처음으로 이동
-            } else {
-                pSlider.scrollBy({ left: itemWidth, behavior: 'smooth' }); // 다음으로 이동
-            }
-        }
-
-        // 스크롤 바 업데이트
         pSlider.addEventListener('scroll', () => {
             const maxScroll = pSlider.scrollWidth - pSlider.clientWidth;
             if (maxScroll <= 0) return;
-            const scrollPercent = (pSlider.scrollLeft / maxScroll) * 80; // 100% - fill(20%)
+            const scrollPercent = (pSlider.scrollLeft / maxScroll) * 80; 
             pFill.style.left = scrollPercent + '%';
         });
 
-        // 드래그 기능 구현
         let isDown = false;
         let startX;
         let scrollLeft;
